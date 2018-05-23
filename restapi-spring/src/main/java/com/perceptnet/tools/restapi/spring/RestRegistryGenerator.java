@@ -79,6 +79,9 @@ public class RestRegistryGenerator extends BaseGenerator<Collection<ClassInfo>> 
         for (ClassInfo c : controllers) {
             basePath = c.getBaseRestMapping();
             s = ctx.getRestServices().get(c);
+            if (s == null) {
+                continue;
+            }
             println();
             print("// ");
             println(s.getServiceQualifiedName());
