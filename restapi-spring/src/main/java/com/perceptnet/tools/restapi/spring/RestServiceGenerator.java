@@ -2,8 +2,6 @@ package com.perceptnet.tools.restapi.spring;
 
 import com.google.common.base.Joiner;
 
-import static com.perceptnet.tools.restapi.spring.GenerationUtils.*;
-
 /**
  * created by vkorovkin (vkorovkin@gmail.com) on 05.12.2017
  */

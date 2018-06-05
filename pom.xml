@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.perceptnet.tools</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>perceptnet-tools</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>Parent project for perceptnet tools</name>
     <description></description>
@@ -11,6 +11,8 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>doclet-helper-commons</module>
+        <module>doclet-service-info-collector</module>
         <module>restapi-spring</module>
     </modules>
 
@@ -148,7 +150,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring.version>4.1.9.RELEASE</spring.version>
+        <spring.version>5.0.4.RELEASE</spring.version>
     </properties>
 
     <distributionManagement>

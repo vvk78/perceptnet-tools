@@ -6,7 +6,11 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
 import com.sun.javadoc.RootDoc;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,7 +66,6 @@ public class RestServiceGenDoclet {
     }
 
 
-
     public Collection<ClassInfo> collectControllersInfo(RootDoc root) {
         Collection<ClassInfo> result = new ArrayList<>(30);
         ClassDoc[] classes = root.classes();
@@ -90,48 +93,44 @@ public class RestServiceGenDoclet {
         if (!c.typeName().endsWith("Controller")) {
             return null;
         }
-        HttpMethod requestMethod = null;
-        String requestMapping = null;
 
+        ClassInfo ci;
     cl:
         {
             for (AnnotationDesc ad : c.annotations()) {
-                requestMapping = extractAnnotationValue(RequestMapping.class, ad);
+                String requestMapping = extractAnnotationValue(RequestMapping.class, ad);
                 if (requestMapping != null) {
                     System.out.println("   Request mapping: " + requestMapping);
+                    ci = new ClassInfo(c.name(), c.qualifiedName(), requestMapping, c.getRawCommentText());
                     break cl;
                 }
             }
 
             return null;
         }
-        final ClassInfo ci = new ClassInfo(c.name(), c.qualifiedName(), requestMapping, c.getRawCommentText());
+
+
 
     methods:
         for (MethodDoc m : c.methods()) {
+            RestMethodInfo rmi = null;
             for (AnnotationDesc ad : m.annotations()) {
-                String httpMethodStr = extractAnnotationValue(RequestMapping.class, ad, "method");
-                if (httpMethodStr != null) {
-                    requestMethod = helper.parseHttpMethodSafely(httpMethodStr);
-                    if (requestMethod == null) {
-                        System.err.println("Not parsable request method: " + httpMethodStr);
-                        continue methods;
-                    }
-                } else {
-                    continue methods;
+                rmi = extractRestMethodMappingFromShortcuts(ad);
+                if (rmi == null) {
+                    rmi = extractRestMethodMappingBasic(ad);
                 }
 
-                requestMapping = extractAnnotationValue(RequestMapping.class, ad, "value");
-                if (requestMapping != null) {
-                    //System.out.println("   Request mapping in method: " + requestMethod +" / " + requestMapping);
+                if (rmi != null) {
                     break;
-                } else {
-                    continue methods;
                 }
             }
 
-            MethodInfo mi = new MethodInfo(m.name(), m.flatSignature(), requestMethod,
-                    helper.parseRequestMapping(requestMapping), m.getRawCommentText(), ci.addImport(m.returnType().qualifiedTypeName()));
+            if (rmi == null) {
+                continue methods;
+            }
+
+            MethodInfo mi = new MethodInfo(m.name(), m.flatSignature(), rmi.httpMethod,
+                    helper.parseRequestMapping(rmi.requestMapping), m.getRawCommentText(), ci.addImport(m.returnType().qualifiedTypeName()));
 
             ci.getMethods().add(mi);
 
@@ -159,6 +158,41 @@ public class RestServiceGenDoclet {
         System.out.println(" Imports: " + ci.getImports().size());
         System.out.println(" Methods: " + ci.getMethods().size());
         return ci;
+    }
+
+    /**
+     * Spring version >5 brings new annotations to map request methods shortly like GetMapping, PostMapping etc., this
+     * method extracts rest mapping info from these shortcuts if possible, or returns null otherwise
+     */
+    private RestMethodInfo extractRestMethodMappingFromShortcuts(AnnotationDesc ad) {
+        String requestMapping = extractAnnotationValue(GetMapping.class, ad, "value");
+        if ((requestMapping = extractAnnotationValue(GetMapping.class, ad, "value")) != null) {
+            return new RestMethodInfo(HttpMethod.get, requestMapping);
+        } else if ((requestMapping = extractAnnotationValue(PostMapping.class, ad, "value")) != null) {
+            return new RestMethodInfo(HttpMethod.post, requestMapping);
+        } else if ((requestMapping = extractAnnotationValue(PatchMapping.class, ad, "value")) != null) {
+            return new RestMethodInfo(HttpMethod.patch, requestMapping);
+        } else if ((requestMapping = extractAnnotationValue(DeleteMapping.class, ad, "value")) != null) {
+            return new RestMethodInfo(HttpMethod.delete, requestMapping);
+        }
+        return null;
+    }
+
+    private RestMethodInfo extractRestMethodMappingBasic(AnnotationDesc ad) {
+        HttpMethod requestMethod;
+        String httpMethodStr = extractAnnotationValue(RequestMapping.class, ad, "method");
+        if (httpMethodStr != null) {
+            requestMethod = helper.parseHttpMethodSafely(httpMethodStr);
+            if (requestMethod == null) {
+                System.err.println("Not parsable request method: " + httpMethodStr);
+                return null;
+            }
+        } else {
+            return null;
+        }
+
+        String requestMappingStr = extractAnnotationValue(RequestMapping.class, ad, "value");
+        return new RestMethodInfo(requestMethod, requestMappingStr);
     }
 
     private String extractAnnotationValue(Class ac, AnnotationDesc ad) {
@@ -191,9 +225,19 @@ public class RestServiceGenDoclet {
         return "";
     }
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    //                                               I N N E R    C L A S S E S
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    private static final class RestMethodInfo {
+        private HttpMethod httpMethod;
+        private String requestMapping;
 
-
+        public RestMethodInfo(HttpMethod httpMethod, String requestMapping) {
+            this.httpMethod = httpMethod;
+            this.requestMapping = requestMapping;
+        }
+    }
 
 
 }

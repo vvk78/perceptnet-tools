@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.perceptnet.tools.restapi.spring.GenerationUtils.simpleName;
+import static com.perceptnet.tools.restapi.spring.GenerationUtils.*;
 
 /**
  * This class keeps info about being generated rest service.

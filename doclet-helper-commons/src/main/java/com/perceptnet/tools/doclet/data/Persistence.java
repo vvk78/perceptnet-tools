@@ -1,8 +1,10 @@
-package com.perceptnet.tools.restapi.spring;
+package com.perceptnet.tools.doclet.data;
 
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
+import com.perceptnet.commons.utils.FileUtils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,12 +19,12 @@ import java.util.zip.ZipOutputStream;
 /**
  * created by vkorovkin (vkorovkin@gmail.com) on 04.12.2017
  */
-class Persistence {
+public class Persistence {
 
     private OutputStream os;
     private JsonWriter jsonWriter;
 
-    public void saveClassInfos(String fileName, Collection<ClassInfo> classesInfo) {
+    public void saveClassInfos(String fileName, Collection<SimpleClassInfo> classesInfo) {
         prepareFos(fileName);
         try {
             jsonWriter.write(classesInfo);
@@ -42,12 +44,12 @@ class Persistence {
         }
     }
 
-    public Collection<ClassInfo> loadClassInfos(String fileName) {
+    public Collection<SimpleClassInfo> loadClassInfos(String fileName) {
         try (InputStream is = getInput(fileName)) {
             if (is instanceof ZipInputStream) {
                 ZipEntry entry = ((ZipInputStream)is).getNextEntry();
             }
-            Collection<ClassInfo> result = (Collection<ClassInfo>) JsonReader.jsonToJava(is, null);
+            Collection<SimpleClassInfo> result = (Collection<SimpleClassInfo>) JsonReader.jsonToJava(is, null);
             return result;
         } catch (Exception e) {
             throw new RuntimeException("Cannot load class information from " + fileName + " due to " + e, e);
@@ -75,7 +77,7 @@ class Persistence {
         if (fileName == null || fileName.trim().isEmpty()) {
             fileName = "RestControllers.doc.json"; // + ".zip";
         }
-        GenerationUtils.prepareFileForReCreation(fileName);
+        FileUtils.prepareFileForReCreation(fileName);
         try {
             FileOutputStream fos = new FileOutputStream(fileName);
             if (fileName.endsWith(".zip")) {
@@ -97,4 +99,5 @@ class Persistence {
             throw new RuntimeException(e);
         }
     }
+
 }
