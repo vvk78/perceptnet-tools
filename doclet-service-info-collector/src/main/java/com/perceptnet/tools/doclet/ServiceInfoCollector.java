@@ -1,16 +1,14 @@
 package com.perceptnet.tools.doclet;
 
-import com.perceptnet.commons.utils.MiscUtils;
-import com.perceptnet.tools.doclet.data.SimpleClassInfo;
-import com.perceptnet.tools.doclet.data.SimpleMethodInfo;
-import com.perceptnet.tools.doclet.data.SimpleParamInfo;
+import com.perceptnet.tools.doclet.data.ClassDocInfo;
+import com.perceptnet.tools.doclet.data.MethodDocInfo;
+import com.perceptnet.tools.doclet.data.ParamDocInfo;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
 import com.sun.javadoc.RootDoc;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +24,11 @@ public class ServiceInfoCollector {
      *
      * @param rootDoc doclet representation of module
      */
-    public Map<String, SimpleClassInfo> collectServicesInfo(RootDoc rootDoc) {
-        Map<String, SimpleClassInfo> result = new HashMap<>(50); //50 is typical number of services in one micro service project
+    public Map<String, ClassDocInfo> collectServicesInfo(RootDoc rootDoc) {
+        Map<String, ClassDocInfo> result = new HashMap<>(50); //50 is typical number of services in one micro service project
         Stream<ClassDoc> stream = Stream.of(rootDoc.classes());
         stream.filter(classDoc -> classDoc.isInterface() && classDoc.name().endsWith("Service")).forEach(classDoc -> {
-            SimpleClassInfo ci = new SimpleClassInfo();
+            ClassDocInfo ci = new ClassDocInfo();
             ci.setRawComment(classDoc.getRawCommentText());
             ci.setQualifiedName(classDoc.qualifiedName());
             ci.setName(classDoc.name());
@@ -47,13 +45,13 @@ public class ServiceInfoCollector {
      *
      * @param classDoc doclet representation of class
      */
-    private List<SimpleMethodInfo> collectMethodInfo(SimpleClassInfo ci, ClassDoc classDoc) {
+    private List<MethodDocInfo> collectMethodInfo(ClassDocInfo ci, ClassDoc classDoc) {
         if (classDoc == null || classDoc.methods() == null) {
             return new ArrayList<>(0);
         }
-        List<SimpleMethodInfo> result = new ArrayList<>(classDoc.methods().length);
+        List<MethodDocInfo> result = new ArrayList<>(classDoc.methods().length);
         for (MethodDoc methodDoc : classDoc.methods()) {
-            SimpleMethodInfo info = new SimpleMethodInfo();
+            MethodDocInfo info = new MethodDocInfo();
             info.setRawComment(methodDoc.getRawCommentText());
             info.setName(methodDoc.name());
             info.getParams().addAll(collectParametersInfo(ci, methodDoc));
@@ -67,15 +65,15 @@ public class ServiceInfoCollector {
      *
      * @param methodDoc       doclet representation of method
      */
-    private List<SimpleParamInfo> collectParametersInfo(SimpleClassInfo ci, MethodDoc methodDoc) {
+    private List<ParamDocInfo> collectParametersInfo(ClassDocInfo ci, MethodDoc methodDoc) {
         if (methodDoc == null || methodDoc.parameters() == null) {
             return new ArrayList<>(0);
         }
-        List<SimpleParamInfo> result = new ArrayList<>(methodDoc.parameters().length);
+        List<ParamDocInfo> result = new ArrayList<>(methodDoc.parameters().length);
         for (Parameter pDoc : methodDoc.parameters()) {
-            SimpleParamInfo paramInfo = new SimpleParamInfo();
+            ParamDocInfo paramInfo = new ParamDocInfo();
             paramInfo.setName(pDoc.name());
-            paramInfo.setType(pDoc.typeName());
+            paramInfo.setType(pDoc.type().qualifiedTypeName());
             paramInfo.setActualTypeName(ci.addImport(pDoc.type().qualifiedTypeName()));
             result.add(paramInfo);
         }

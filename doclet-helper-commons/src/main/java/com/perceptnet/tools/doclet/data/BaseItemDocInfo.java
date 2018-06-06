@@ -1,18 +1,22 @@
 package com.perceptnet.tools.doclet.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Base class for program items (classes, interfaces, methods and instance and class fields)
  *
  * created by vkorovkin on 05.06.2018
  */
-public class BaseItemInfo<SELF extends BaseItemInfo> implements DocInfo {
+public class BaseItemDocInfo<SELF extends BaseItemDocInfo> implements DocInfo {
     private String name;
     private String rawComment;
+    private List<AnnotationInfo> annotations = new ArrayList<>(3);
 
-    public BaseItemInfo() {
+    public BaseItemDocInfo() {
     }
 
-    public BaseItemInfo(String name, String rawComment) {
+    public BaseItemDocInfo(String name, String rawComment) {
         this.name = name;
         this.rawComment = rawComment;
     }
@@ -33,5 +37,9 @@ public class BaseItemInfo<SELF extends BaseItemInfo> implements DocInfo {
     public SELF setName(String name) {
         this.name = name;
         return (SELF) this;
+    }
+
+    public List<AnnotationInfo> getAnnotations() {
+        return annotations;
     }
 }

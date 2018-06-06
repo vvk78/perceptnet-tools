@@ -11,21 +11,23 @@ import java.util.Set;
 /**
  * created by vkorovkin on 05.06.2018
  */
-public class SimpleClassInfo<SELF extends SimpleClassInfo> extends BaseItemInfo<SELF> {
+public class ClassDocInfo<SELF extends ClassDocInfo> extends BaseItemDocInfo<SELF> {
     private static final Set<String> PRIMITIVES = new HashSet<>(Arrays.asList(
             new String[]{"byte", "short", "int", "long", "float", "double", "char", "boolean", "void"}));
 
     private String qualifiedName;
+    private boolean isInterface;
 
     private Map<String, String> imports = new HashMap<>(50);
-    private List<SimpleMethodInfo> methods = new ArrayList<>();
+    private List<MethodDocInfo> methods = new ArrayList<>();
 
-    public SimpleClassInfo() {
+    public ClassDocInfo() {
     }
 
-    public SimpleClassInfo(String name, String rawComment, String qualifiedName) {
+    public ClassDocInfo(String name, String rawComment, String qualifiedName, boolean isInterface) {
         super(name, rawComment);
         this.qualifiedName = qualifiedName;
+        this.isInterface = isInterface;
     }
 
     public String getQualifiedName() {
@@ -41,7 +43,7 @@ public class SimpleClassInfo<SELF extends SimpleClassInfo> extends BaseItemInfo<
         return imports;
     }
 
-    public List<SimpleMethodInfo> getMethods() {
+    public List<MethodDocInfo> getMethods() {
         return methods;
     }
 

@@ -1,10 +1,9 @@
 package com.perceptnet.tools.doclet;
 
-import com.perceptnet.tools.doclet.data.Persistence;
-import com.perceptnet.tools.doclet.data.SimpleClassInfo;
+import com.perceptnet.tools.doclet.data.PersistenceService;
+import com.perceptnet.tools.doclet.data.ClassDocInfo;
 import com.sun.javadoc.RootDoc;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,9 +21,9 @@ public class ServiceInfoCollectorDoclet {
         String fileName = getFileName(rootDoc);
         if (fileName != null) {
             ServiceInfoCollector serviceInfoCollector = new ServiceInfoCollector();
-            Map<String, SimpleClassInfo> services = serviceInfoCollector.collectServicesInfo(rootDoc);
+            Map<String, ClassDocInfo> services = serviceInfoCollector.collectServicesInfo(rootDoc);
             System.out.println("Number of services collected: " + services.size());
-            Persistence p = new Persistence();
+            PersistenceService p = new PersistenceService();
             p.saveClassInfos(fileName, services.values());
             return true;
         }

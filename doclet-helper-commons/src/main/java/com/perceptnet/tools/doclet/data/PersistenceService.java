@@ -4,7 +4,6 @@ import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 import com.perceptnet.commons.utils.FileUtils;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -19,12 +18,12 @@ import java.util.zip.ZipOutputStream;
 /**
  * created by vkorovkin (vkorovkin@gmail.com) on 04.12.2017
  */
-public class Persistence {
+public class PersistenceService {
 
     private OutputStream os;
     private JsonWriter jsonWriter;
 
-    public void saveClassInfos(String fileName, Collection<SimpleClassInfo> classesInfo) {
+    public void saveClassInfos(String fileName, Collection<ClassDocInfo> classesInfo) {
         prepareFos(fileName);
         try {
             jsonWriter.write(classesInfo);
@@ -44,12 +43,12 @@ public class Persistence {
         }
     }
 
-    public Collection<SimpleClassInfo> loadClassInfos(String fileName) {
+    public Collection<ClassDocInfo> loadClassInfos(String fileName) {
         try (InputStream is = getInput(fileName)) {
             if (is instanceof ZipInputStream) {
                 ZipEntry entry = ((ZipInputStream)is).getNextEntry();
             }
-            Collection<SimpleClassInfo> result = (Collection<SimpleClassInfo>) JsonReader.jsonToJava(is, null);
+            Collection<ClassDocInfo> result = (Collection<ClassDocInfo>) JsonReader.jsonToJava(is, null);
             return result;
         } catch (Exception e) {
             throw new RuntimeException("Cannot load class information from " + fileName + " due to " + e, e);
