@@ -1,5 +1,8 @@
 package com.perceptnet.tools.doclet.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Simple param info, does not extends BaseItemDocInfo (todo -- may it worth doing that?)
  *
@@ -8,6 +11,7 @@ package com.perceptnet.tools.doclet.data;
 public class ParamDocInfo<SELF extends ParamDocInfo> implements DocInfo {
     private String name;
     private TypeInfo type;
+    private List<AnnotationInfo> annotations = new ArrayList<>(0);
 
     public ParamDocInfo() {
     }
@@ -35,4 +39,7 @@ public class ParamDocInfo<SELF extends ParamDocInfo> implements DocInfo {
         return (SELF) this;
     }
 
+    public List<AnnotationInfo> getAnnotations() {
+        return annotations;
+    }
 }

@@ -13,7 +13,8 @@
     <modules>
         <module>doclet-helper-commons</module>
         <module>doclet-service-info-collector</module>
-        <module>restapi-spring</module>
+        <module>codegen-restapi-spring</module>
+        <module>codegen-service-via-rest-spring</module>
     </modules>
 
     <dependencyManagement>
@@ -151,6 +152,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring.version>5.0.4.RELEASE</spring.version>
+        <perceptnet.commons.version>1.3.0-SNAPSHOT</perceptnet.commons.version>
     </properties>
 
     <distributionManagement>

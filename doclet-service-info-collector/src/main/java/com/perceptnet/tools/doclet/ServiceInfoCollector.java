@@ -20,6 +20,8 @@ import java.util.stream.Stream;
  * created by vkorovkin on 05.06.2018
  */
 public class ServiceInfoCollector {
+    private boolean paramAnnotations;
+    private boolean classAnnotations;
 
     /**
      * Collected information about service interfaces
@@ -36,9 +38,6 @@ public class ServiceInfoCollector {
             ci.setName(classDoc.name());
             ci.getMethods().addAll(collectMethodInfo(ci, classDoc));
             ci.setInterface(classDoc.isInterface());
-
-            int initCapacity = classDoc.methods() != null && classDoc.methods().length > 0 ? classDoc.methods().length : 0;
-
             result.put(ci.getQualifiedName(), ci);
         });
         return result;
@@ -60,7 +59,7 @@ public class ServiceInfoCollector {
             info.setName(methodDoc.name());
             info.setFlatSignature(methodDoc.flatSignature());
             info.getParams().addAll(collectParametersInfo(ci, methodDoc));
-            info.getAnnotations().addAll(collectAnnotationsInfo(ci, methodDoc));
+            info.getAnnotations().addAll(collectAnnotationsInfo(ci, methodDoc.annotations()));
             result.add(info);
         }
         return result;
@@ -80,6 +79,7 @@ public class ServiceInfoCollector {
             ParamDocInfo paramInfo = new ParamDocInfo();
             paramInfo.setName(pDoc.name());
             paramInfo.setType(ci.addImportType(pDoc.type().qualifiedTypeName()));
+            paramInfo.getAnnotations().addAll(collectAnnotationsInfo(ci, pDoc.annotations()));
             result.add(paramInfo);
         }
         return result;
@@ -88,14 +88,13 @@ public class ServiceInfoCollector {
     /**
      * Collect methods parameters types
      *
-     * @param methodDoc       doclet representation of method
      */
-    private List<AnnotationInfo> collectAnnotationsInfo(ClassDocInfo ci, MethodDoc methodDoc) {
-        if (methodDoc == null || methodDoc.parameters() == null) {
+    private List<AnnotationInfo> collectAnnotationsInfo(ClassDocInfo ci, AnnotationDesc[] annotations) {
+        if (annotations == null) {
             return new ArrayList<>(0);
         }
-        List<AnnotationInfo> result = new ArrayList<>(methodDoc.annotations().length);
-        for (AnnotationDesc ad : methodDoc.annotations()) {
+        List<AnnotationInfo> result = new ArrayList<>(annotations.length);
+        for (AnnotationDesc ad : annotations) {
             AnnotationInfo ai = new AnnotationInfo();
             ai.setType(ci.addImportType(ad.annotationType().qualifiedTypeName()));
             ai.setValue(DocletUtils.extractAnnotationValue(null, ad));

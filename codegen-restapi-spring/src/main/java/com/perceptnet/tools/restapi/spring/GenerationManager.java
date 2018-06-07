@@ -102,6 +102,21 @@ public class GenerationManager {
         generateSourceFile(getSourceFileNameForClass(ctx.getServiceProviderQualifiedName()), new RestProviderGenerator(ctx), null);
     }
 
+    void generateViaRest(Collection<ClassInfo> controllers) {
+        if (ctx == null) {
+            ctx = createContext(controllers);
+        }
+
+        for (ClassInfo c : controllers) {
+            RestServiceInfo s = ctx.getRestServices().get(c);
+            generateSourceFile(getSourceFileNameForClass(s.getServiceQualifiedName()), serviceGenerator, c);
+        }
+
+        //Rest methods registry and provider:
+        generateSourceFile(getSourceFileNameForClass(ctx.getRegistryQualifiedName()), new RestRegistryGenerator(ctx), controllers);
+        generateSourceFile(getSourceFileNameForClass(ctx.getServiceProviderQualifiedName()), new RestProviderGenerator(ctx), null);
+    }
+
     GenerationContext getCtx() {
         return ctx;
     }
