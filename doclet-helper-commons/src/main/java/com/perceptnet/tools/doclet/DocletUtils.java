@@ -55,11 +55,11 @@ public class DocletUtils {
             } else if (valStr.startsWith("{") && valStr.endsWith("}")) {
                 String[] items = valStr.substring(1, valStr.length() - 1).split(",");
                 for (int i = 0; i < items.length; i++) {
-                    String item = items[i];
+                    String item = items[i].trim();
                     if (item.startsWith("\"") && item.endsWith("\"")) {
                         item = item.substring(1, item.length() - 1);
-                        items[i] = item;
                     }
+                    items[i] = item;
                 }
                 result.put(elName, items);
             } else {
