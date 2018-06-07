@@ -50,23 +50,27 @@ public class ClassDocInfo<SELF extends ClassDocInfo> extends BaseItemDocInfo<SEL
     /**
      * Adds full type name to imports and returns actual type name to be used in code (it may be short, or may be full if there are synonyms).
      */
-    public String addImport(String typeName) {
-        String simpleName = typeName.substring(typeName.lastIndexOf(".") + 1, typeName.length());
-        if (typeName.startsWith("java.lang.") || PRIMITIVES.contains(typeName)) {
+    private String addImport(String qualifiedTypeName) {
+        String simpleName = qualifiedTypeName.substring(qualifiedTypeName.lastIndexOf(".") + 1, qualifiedTypeName.length());
+        if (qualifiedTypeName.startsWith("java.lang.") || PRIMITIVES.contains(qualifiedTypeName)) {
             return simpleName;
         }
 
         String result = imports.get(simpleName);
         if (result == null) {
-            imports.put(simpleName, typeName);
+            imports.put(simpleName, qualifiedTypeName);
             return simpleName;
         } else {
-            if (result.equals(typeName)) {
+            if (result.equals(qualifiedTypeName)) {
                 return simpleName;
             } else {
-                imports.put(typeName, typeName);
-                return typeName;
+                imports.put(qualifiedTypeName, qualifiedTypeName);
+                return qualifiedTypeName;
             }
         }
+    }
+
+    public TypeInfo addImportType(String qualifiedTypeName) {
+        return new TypeInfo(qualifiedTypeName, addImport(qualifiedTypeName));
     }
 }

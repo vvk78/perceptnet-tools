@@ -11,6 +11,7 @@ public class MethodDocInfo<SELF extends MethodDocInfo> extends BaseItemDocInfo<S
     private TypeInfo returnType;
 
     private final List<ParamDocInfo> params = new ArrayList<>(5);
+    private final List<AnnotationInfo> annotations = new ArrayList<>(5);
 
     public MethodDocInfo() {
     }
@@ -41,5 +42,10 @@ public class MethodDocInfo<SELF extends MethodDocInfo> extends BaseItemDocInfo<S
 
     public List<ParamDocInfo> getParams() {
         return params;
+    }
+
+    @Override
+    public List<AnnotationInfo> getAnnotations() {
+        return annotations;
     }
 }

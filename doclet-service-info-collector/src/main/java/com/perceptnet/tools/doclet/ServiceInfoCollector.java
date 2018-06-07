@@ -1,8 +1,10 @@
 package com.perceptnet.tools.doclet;
 
+import com.perceptnet.tools.doclet.data.AnnotationInfo;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 import com.perceptnet.tools.doclet.data.MethodDocInfo;
 import com.perceptnet.tools.doclet.data.ParamDocInfo;
+import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
@@ -55,6 +57,7 @@ public class ServiceInfoCollector {
             info.setRawComment(methodDoc.getRawCommentText());
             info.setName(methodDoc.name());
             info.getParams().addAll(collectParametersInfo(ci, methodDoc));
+            info.getAnnotations().addAll(collectAnnotationsInfo(ci, methodDoc));
             result.add(info);
         }
         return result;
@@ -73,9 +76,29 @@ public class ServiceInfoCollector {
         for (Parameter pDoc : methodDoc.parameters()) {
             ParamDocInfo paramInfo = new ParamDocInfo();
             paramInfo.setName(pDoc.name());
-            paramInfo.setType(pDoc.type().qualifiedTypeName());
-            paramInfo.setActualTypeName(ci.addImport(pDoc.type().qualifiedTypeName()));
+            paramInfo.setType(ci.addImportType(pDoc.type().qualifiedTypeName()));
             result.add(paramInfo);
+        }
+        return result;
+    }
+
+    /**
+     * Collect methods parameters types
+     *
+     * @param methodDoc       doclet representation of method
+     */
+    private List<AnnotationInfo> collectAnnotationsInfo(ClassDocInfo ci, MethodDoc methodDoc) {
+        if (methodDoc == null || methodDoc.parameters() == null) {
+            return new ArrayList<>(0);
+        }
+        List<AnnotationInfo> result = new ArrayList<>(methodDoc.annotations().length);
+        for (AnnotationDesc ad : methodDoc.annotations()) {
+            AnnotationInfo ai = new AnnotationInfo();
+            ai.setType(ci.addImportType(ad.annotationType().qualifiedTypeName()));
+            ai.setValue(DocletUtils.extractAnnotationValue(null, ad));
+            ai.getParams().clear();
+            ai.getParams().putAll(DocletUtils.extractAnnotationParams(ad));
+            result.add(ai);
         }
         return result;
     }

@@ -1,11 +1,15 @@
 package com.perceptnet.tools.doclet.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * created by vkorovkin on 06.06.2018
  */
 public class AnnotationInfo<SELF extends AnnotationInfo> {
     private TypeInfo type;
     private String value;
+    private Map<String, Object> params = new HashMap<>();
 
     public AnnotationInfo() {
     }
@@ -44,5 +48,9 @@ public class AnnotationInfo<SELF extends AnnotationInfo> {
         } else {
             return "@" + type;
         }
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
     }
 }
