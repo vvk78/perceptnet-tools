@@ -35,6 +35,8 @@ public class ServiceInfoCollector {
             ci.setQualifiedName(classDoc.qualifiedName());
             ci.setName(classDoc.name());
             ci.getMethods().addAll(collectMethodInfo(ci, classDoc));
+            ci.setInterface(classDoc.isInterface());
+
             int initCapacity = classDoc.methods() != null && classDoc.methods().length > 0 ? classDoc.methods().length : 0;
 
             result.put(ci.getQualifiedName(), ci);
@@ -56,6 +58,7 @@ public class ServiceInfoCollector {
             MethodDocInfo info = new MethodDocInfo();
             info.setRawComment(methodDoc.getRawCommentText());
             info.setName(methodDoc.name());
+            info.setFlatSignature(methodDoc.flatSignature());
             info.getParams().addAll(collectParametersInfo(ci, methodDoc));
             info.getAnnotations().addAll(collectAnnotationsInfo(ci, methodDoc));
             result.add(info);

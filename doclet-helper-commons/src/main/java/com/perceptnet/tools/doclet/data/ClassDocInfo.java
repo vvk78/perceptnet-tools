@@ -39,6 +39,15 @@ public class ClassDocInfo<SELF extends ClassDocInfo> extends BaseItemDocInfo<SEL
         return (SELF) this;
     }
 
+    public boolean isInterface() {
+        return isInterface;
+    }
+
+    public SELF setInterface(boolean anInterface) {
+        isInterface = anInterface;
+        return (SELF) this;
+    }
+
     public Map<String, String> getImports() {
         return imports;
     }
