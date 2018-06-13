@@ -14,6 +14,7 @@
         <module>doclet-helper-commons</module>
         <module>doclet-service-info-collector</module>
         <module>codegen-restapi-spring</module>
+        <module>codegen-commons</module>
         <module>codegen-service-via-rest-spring</module>
     </modules>
 

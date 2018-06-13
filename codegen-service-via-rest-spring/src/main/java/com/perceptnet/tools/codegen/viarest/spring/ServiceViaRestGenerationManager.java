@@ -1,9 +1,11 @@
-package com.perceptnet.tools.restapi.spring;
+package com.perceptnet.tools.codegen.viarest.spring;
 
 import com.perceptnet.abstractions.Adaptor;
 import com.perceptnet.commons.utils.FileUtils;
 import com.perceptnet.commons.utils.IncExlRegexFilter;
 import com.perceptnet.commons.utils.OptionUtils;
+import com.perceptnet.tools.codegen.BaseGenerator;
+import com.perceptnet.tools.doclet.data.ClassDocInfo;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -15,24 +17,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static com.perceptnet.commons.utils.StringUtils.unquote;
-import static com.perceptnet.tools.restapi.spring.GenerationUtils.*;
+import static com.perceptnet.commons.utils.StringUtils.*;
 
 /**
  * created by vkorovkin (vkorovkin@gmail.com) on 12.12.2017
  */
-public class GenerationManager {
+public class ServiceViaRestGenerationManager {
     private GenerationAdaptor adaptor;
     private GenerationContext ctx;
 
-    private RestServiceGenerator serviceGenerator;
     private RestRegistryGenerator registryGenerator;
     private RestProviderGenerator providerGenerator;
 
     public static void main(String[] args) {
         Map<String, List<String>> options = OptionUtils.parseOptions(args);
 
-        Collection<ClassInfo> controllerInfos = null;
+        Collection<ClassDocInfo> controllerInfos = null;
         GenerationOptions go = new GenerationOptions();
         for (Map.Entry<String, List<String>> entry : options.entrySet()) {
             @Nullable String optionName = entry.getKey();
@@ -42,7 +42,7 @@ public class GenerationManager {
                     throw new IllegalArgumentException("Required value of -f option is not specified");
                 }
                 Persistence p = new Persistence();
-                controllerInfos = p.loadClassInfos(optionArgs.get(0));
+                controllerInfos = p.loadClassDocInfos(optionArgs.get(0));
             } else if ("-adapter".equals(optionName)) {
                 if (optionArgs.isEmpty()) {
                     throw new IllegalArgumentException("Required value of -adapter option is not specified");
@@ -51,20 +51,20 @@ public class GenerationManager {
             }
         }
 
-        GenerationManager gm = new GenerationManager(go.getAdaptor());
+        ServiceViaRestGenerationManager gm = new ServiceViaRestGenerationManager(go.getAdaptor());
         controllerInfos = gm.filterControllersInfo(options.get("-inc"), options.get("-exl"), options.containsKey("-reg"), controllerInfos);
         gm.generate(controllerInfos);
     }
 
-    GenerationManager() {
+    ServiceViaRestGenerationManager() {
         this(null);
     }
 
-    GenerationManager(GenerationAdaptor adaptor) {
+    ServiceViaRestGenerationManager(GenerationAdaptor adaptor) {
         this.adaptor = adaptor != null ? adaptor : new DefaultGenerationAdaptor();
     }
 
-    Collection<ClassInfo> filterControllersInfo(List<String> incNameMasks, List<String> exlNameMasks, boolean regexMasks, Collection<ClassInfo> c) {
+    Collection<ClassDocInfo> filterControllersInfo(List<String> incNameMasks, List<String> exlNameMasks, boolean regexMasks, Collection<ClassDocInfo> c) {
         if ((incNameMasks == null || incNameMasks.isEmpty()) && (exlNameMasks == null || exlNameMasks.isEmpty())) {
             return c;
         }
@@ -79,24 +79,24 @@ public class GenerationManager {
             filter.setExlFiltersSimpleWildcards(exlNameMasks);
         }
         filter.setIncludeNulls(false);
-        filter.setItemAdaptor(new Adaptor<ClassInfo, String>() {
+        filter.setItemAdaptor(new Adaptor<ClassDocInfo, String>() {
             @Override
-            public String adapt(ClassInfo classInfo) {
-                return classInfo == null ? null : classInfo.getQualifiedName();
+            public String adapt(ClassDocInfo ClassDocInfo) {
+                return ClassDocInfo == null ? null : ClassDocInfo.getQualifiedName();
             }
         });
         return filter.addIncluded(c, new ArrayList<>(50));
     }
 
-    void generate(Collection<ClassInfo> controllers) {
+    void generate(Collection<ClassDocInfo> controllers) {
         if (ctx == null) {
             ctx = createContext(controllers);
         }
 
         //Rest services:
         serviceGenerator = new RestServiceGenerator(ctx);
-        for (ClassInfo c : controllers) {
-            RestServiceInfo s = ctx.getRestServices().get(c);
+        for (ClassDocInfo c : controllers) {
+            OldRestServiceClientInfo s = ctx.getRestServices().get(c);
             generateSourceFile(getSourceFileNameForClass(s.getServiceQualifiedName()), serviceGenerator, c);
         }
 
@@ -105,13 +105,13 @@ public class GenerationManager {
         generateSourceFile(getSourceFileNameForClass(ctx.getServiceProviderQualifiedName()), new RestProviderGenerator(ctx), null);
     }
 
-    void generateViaRest(Collection<ClassInfo> controllers) {
+    void generateViaRest(Collection<ClassDocInfo> controllers) {
         if (ctx == null) {
             ctx = createContext(controllers);
         }
 
-        for (ClassInfo c : controllers) {
-            RestServiceInfo s = ctx.getRestServices().get(c);
+        for (ClassDocInfo c : controllers) {
+            OldRestServiceClientInfo s = ctx.getRestServices().get(c);
             generateSourceFile(getSourceFileNameForClass(s.getServiceQualifiedName()), serviceGenerator, c);
         }
 
@@ -139,11 +139,11 @@ public class GenerationManager {
         }
     }
 
-    GenerationContext createContext(Collection<ClassInfo> controllers) {
+    GenerationContext createContext(Collection<ClassDocInfo> controllers) {
         GenerationContext ctx = new GenerationContext(adaptor);
-        for (ClassInfo c : controllers) {
+        for (ClassDocInfo c : controllers) {
             String serviceQualifiedName = this.adaptor.getServiceQualifiedNameFromController(c.getQualifiedName());
-            RestServiceInfo serviceInfo = new RestServiceInfo(serviceQualifiedName);
+            OldRestServiceClientInfo serviceInfo = new OldRestServiceClientInfo(serviceQualifiedName);
             ctx.getRestServices().put(c, serviceInfo);
         }
         return ctx;

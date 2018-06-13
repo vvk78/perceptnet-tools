@@ -20,8 +20,16 @@ import java.util.stream.Stream;
  * created by vkorovkin on 05.06.2018
  */
 public class ServiceInfoCollector {
-    private boolean paramAnnotations;
-    private boolean classAnnotations;
+
+    private CollectorOptions options;
+
+    public ServiceInfoCollector() {
+        this(new CollectorOptions());
+    }
+
+    public ServiceInfoCollector(CollectorOptions options) {
+        this.options = options;
+    }
 
     /**
      * Collected information about service interfaces
