@@ -44,4 +44,8 @@ public class TypeInfo<SELF extends TypeInfo> {
     public String toString() {
         return actualName;
     }
+
+    public boolean isClass(Class c) {
+        return qualifiedName.equals(c.getName());
+    }
 }

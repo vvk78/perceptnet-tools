@@ -1,5 +1,8 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
+import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
+import com.perceptnet.tools.codegen.rest.RestServiceInfo;
+import com.perceptnet.tools.doclet.DocInfoUtils;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 
 import java.util.IdentityHashMap;
@@ -16,9 +19,9 @@ public class GenerationContext {
     private String encoding = "UTF-8";
 
     private GenerationAdaptor generationAdaptor;
-    private GenerationHelper helper = GenerationHelper.I;
+    private RestGenerationHelper helper = RestGenerationHelper.I;
     private int totalMethodsCount;
-    private Map<ClassDocInfo, OldRestServiceClientInfo> restServices = new IdentityHashMap<>(100);
+    private Map<ClassDocInfo, RestServiceInfo> restServices = new IdentityHashMap<>(100);
     private String restServiceProviderQualifiedName;
     private String baseOutputDir;
 
@@ -38,7 +41,7 @@ public class GenerationContext {
         return totalMethodsCount;
     }
 
-    public Map<ClassDocInfo, OldRestServiceClientInfo> getRestServices() {
+    public Map<ClassDocInfo, RestServiceInfo> getRestServices() {
         return restServices;
     }
 
@@ -48,7 +51,7 @@ public class GenerationContext {
             if (result != null) {
                 restServiceProviderQualifiedName = result;
             } else {
-                String pkg = helper.getMostGeneralPackage(restServices.values());
+                String pkg = DocInfoUtils.getMostGeneralPackage(restServices.values());
                 if (pkg != null) {
                     restServiceProviderQualifiedName = pkg + ".RestServiceProvider";
                 } else {

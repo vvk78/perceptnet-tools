@@ -3,6 +3,7 @@ package com.perceptnet.tools.codegen.viarest.spring;
 import com.perceptnet.restclient.BaseRestServiceProvider;
 import com.perceptnet.restclient.MessageConverter;
 import com.perceptnet.tools.codegen.BaseGenerator;
+import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -12,7 +13,7 @@ import java.util.Iterator;
  */
 public class RestProviderGenerator extends BaseGenerator<Object> {
 
-    private GenerationHelper helper = GenerationHelper.I;
+    private RestGenerationHelper helper = RestGenerationHelper.I;
     private GenerationContext ctx;
 
     public RestProviderGenerator(GenerationContext ctx) {

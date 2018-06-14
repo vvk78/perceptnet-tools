@@ -1,5 +1,7 @@
 package com.perceptnet.tools.doclet.data;
 
+import com.perceptnet.tools.doclet.DocInfoUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +49,13 @@ public class MethodDocInfo<SELF extends MethodDocInfo> extends BaseItemDocInfo<S
     @Override
     public List<AnnotationInfo> getAnnotations() {
         return annotations;
+    }
+
+    public AnnotationInfo<?> findAnnotation(Class annotationClass) {
+        return DocInfoUtils.firstOfType(annotations, annotationClass);
+    }
+
+    public boolean hasAnnotation(Class annotationClass) {
+        return findAnnotation(annotationClass) != null;
     }
 }

@@ -1,7 +1,6 @@
-package com.perceptnet.tools.codegen.viarest.spring;
+package com.perceptnet.tools.codegen.rest;
 
 import com.perceptnet.restclient.HttpMethod;
-import com.perceptnet.tools.codegen.rest.RestMethodParamInfo;
 import com.perceptnet.tools.doclet.data.MethodDocInfo;
 
 import java.util.ArrayList;
@@ -16,11 +15,18 @@ public class RestMethodInfo {
 
     private HttpMethod httpMethod;
     /**
-     * See {@link GenerationHelper#parseRequestMapping(String)}
+     * See {@link RestGenerationHelper#parseRequestMappingStr(String)}
      */
-    private List baseRestMappingItems = new ArrayList<>();
+    private List rawRestMappingItems = new ArrayList<>();
 
-    private List<RestMethodParamInfo> params = new ArrayList<>(5);
+    private final List<RestMethodParamInfo> params;
+
+    public RestMethodInfo(MethodDocInfo controllerMethodDoc, HttpMethod httpMethod, List rawRestMappingItems) {
+        this.controllerMethodDoc = controllerMethodDoc;
+        this.httpMethod = httpMethod;
+        this.rawRestMappingItems = rawRestMappingItems;
+        this.params = new ArrayList<>(rawRestMappingItems.size() + 3);
+    }
 
     public MethodDocInfo getServiceMethodDoc() {
         return serviceMethodDoc;
@@ -46,12 +52,12 @@ public class RestMethodInfo {
         this.httpMethod = httpMethod;
     }
 
-    public List getBaseRestMappingItems() {
-        return baseRestMappingItems;
+    public List getRawRestMappingItems() {
+        return rawRestMappingItems;
     }
 
-    public void setBaseRestMappingItems(List baseRestMappingItems) {
-        this.baseRestMappingItems = baseRestMappingItems;
+    public void setRawRestMappingItems(List rawRestMappingItems) {
+        this.rawRestMappingItems = rawRestMappingItems;
     }
 
     public List<RestMethodParamInfo> getParams() {

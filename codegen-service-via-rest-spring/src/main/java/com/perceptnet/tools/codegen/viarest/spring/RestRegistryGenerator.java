@@ -5,6 +5,7 @@ import com.perceptnet.restclient.HttpMethod;
 import com.perceptnet.restclient.RestMethodDescription;
 import com.perceptnet.restclient.ServiceMethodsRegistry;
 import com.perceptnet.tools.codegen.BaseGenerator;
+import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 import com.perceptnet.tools.doclet.data.MethodDocInfo;
 
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * created by vkorovkin (vkorovkin@gmail.com) on 06.12.2017
  */
 public class RestRegistryGenerator extends BaseGenerator<Collection<ClassDocInfo>> {
-    private GenerationHelper helper = GenerationHelper.I;
+    private RestGenerationHelper helper = RestGenerationHelper.I;
     private GenerationContext ctx;
     private String basePath;
     private OldRestServiceClientInfo s;

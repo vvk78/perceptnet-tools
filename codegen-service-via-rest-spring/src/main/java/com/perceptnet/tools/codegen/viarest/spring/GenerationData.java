@@ -1,5 +1,6 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
+import com.perceptnet.tools.codegen.rest.RestServiceInfo;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 
 import java.util.HashMap;

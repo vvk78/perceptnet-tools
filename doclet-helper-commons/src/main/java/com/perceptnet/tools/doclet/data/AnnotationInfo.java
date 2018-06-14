@@ -53,4 +53,9 @@ public class AnnotationInfo<SELF extends AnnotationInfo> {
     public Map<String, Object> getParams() {
         return params;
     }
+
+    public String getParamAsStr(String paramName) {
+        Object p = params.get(paramName);
+        return p == null ? null : p.toString();
+    }
 }

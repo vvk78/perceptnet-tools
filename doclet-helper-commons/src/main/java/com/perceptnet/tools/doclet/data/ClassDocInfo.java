@@ -20,7 +20,6 @@ public class ClassDocInfo<SELF extends ClassDocInfo> extends BaseItemDocInfo<SEL
 
     private Map<String, String> imports = new HashMap<>(50);
     private List<MethodDocInfo> methods = new ArrayList<>();
-    private List<AnnotationInfo> annotations = new ArrayList<>(2);
 
     public ClassDocInfo() {
     }
@@ -84,8 +83,4 @@ public class ClassDocInfo<SELF extends ClassDocInfo> extends BaseItemDocInfo<SEL
         return new TypeInfo(qualifiedTypeName, addImport(qualifiedTypeName));
     }
 
-    @Override
-    public List<AnnotationInfo> getAnnotations() {
-        return annotations;
-    }
 }
