@@ -16,6 +16,7 @@
         <module>codegen-restapi-spring</module>
         <module>codegen-commons</module>
         <module>codegen-service-via-rest-spring</module>
+        <module>example</module>
     </modules>
 
     <dependencyManagement>
