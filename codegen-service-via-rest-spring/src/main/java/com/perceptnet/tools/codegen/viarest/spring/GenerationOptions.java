@@ -5,8 +5,7 @@ package com.perceptnet.tools.codegen.viarest.spring;
  */
 class GenerationOptions {
     private boolean generate;
-    private String saveControllersInfoAs;
-    private GenerationAdaptor adaptor;
+    private SvrGenerationAdaptor adaptor;
 
 
 
@@ -18,15 +17,7 @@ class GenerationOptions {
         this.generate = generate;
     }
 
-    public String getSaveControllersInfoAs() {
-        return saveControllersInfoAs;
-    }
-
-    public void setSaveControllersInfoAs(String saveControllersInfoAs) {
-        this.saveControllersInfoAs = saveControllersInfoAs;
-    }
-
-    public GenerationAdaptor getAdaptor() {
+    public SvrGenerationAdaptor getAdaptor() {
         return adaptor;
     }
 
@@ -42,7 +33,7 @@ class GenerationOptions {
             throw new RuntimeException("Cannot load specified generation adaptor class '" + adaptorQualifiedName + "' due to " + e, e);
         }
         try {
-            this.adaptor = (GenerationAdaptor) adaptorClass.newInstance();
+            this.adaptor = (SvrGenerationAdaptor) adaptorClass.newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Cannot instantiate generation adaptor '" + adaptorQualifiedName + "' due to " + e, e);
         }

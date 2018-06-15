@@ -83,4 +83,8 @@ public class ClassDocInfo<SELF extends ClassDocInfo> extends BaseItemDocInfo<SEL
         return new TypeInfo(qualifiedTypeName, addImport(qualifiedTypeName));
     }
 
+    @Override
+    public String toString() {
+        return qualifiedName;
+    }
 }

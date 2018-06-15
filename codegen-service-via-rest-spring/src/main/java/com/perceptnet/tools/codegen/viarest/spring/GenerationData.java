@@ -3,6 +3,7 @@ package com.perceptnet.tools.codegen.viarest.spring;
 import com.perceptnet.tools.codegen.rest.RestServiceInfo;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,14 +13,14 @@ import java.util.Map;
  *
  * created by vkorovkin on 13.06.2018
  */
-public class GenerationData {
-    private List<ClassDocInfo> services;
-    private List<ClassDocInfo> controllers;
+class GenerationData {
+    private Collection<ClassDocInfo> services;
+    private Collection<ClassDocInfo> controllers;
 
     /**
      * Map of server side rest service descriptors on qualified service class name
      */
-    private Map<String, RestServiceInfo> serverParts;
+    private Map<String, RestServiceInfo> restServices;
 
     /**
      * Constructs generation data model from raw doclet data
@@ -27,28 +28,28 @@ public class GenerationData {
      * @param services list of service doclet descriptors
      * @param controllers list of controller doclet decriptos
      */
-    public GenerationData(List<ClassDocInfo> services, List<ClassDocInfo> controllers) {
-        if (services == null) {
-            throw new NullPointerException("Services is null");
-        }
+    public GenerationData(Collection<ClassDocInfo> controllers, Collection<ClassDocInfo> services) {
         if (controllers == null) {
             throw new NullPointerException("Controllers is null");
         }
-        this.services = services;
+        if (services == null) {
+            throw new NullPointerException("Services is null");
+        }
         this.controllers = controllers;
+        this.services = services;
 
-        serverParts = new HashMap<>(Math.max(10, controllers.size()));
+        this.restServices = new HashMap<>(Math.max(10, controllers.size()));
     }
 
-    public List<ClassDocInfo> getServices() {
+    public Collection<ClassDocInfo> getServices() {
         return services;
     }
 
-    public List<ClassDocInfo> getControllers() {
+    public Collection<ClassDocInfo> getControllers() {
         return controllers;
     }
 
-    public Map<String, RestServiceInfo> getServerParts() {
-        return serverParts;
+    public Map<String, RestServiceInfo> getRestServices() {
+        return restServices;
     }
 }

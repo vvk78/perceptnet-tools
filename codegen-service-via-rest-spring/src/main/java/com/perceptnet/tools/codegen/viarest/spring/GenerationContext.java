@@ -18,7 +18,7 @@ public class GenerationContext {
      */
     private String encoding = "UTF-8";
 
-    private GenerationAdaptor generationAdaptor;
+    private SvrGenerationAdaptor generationAdaptor;
     private RestGenerationHelper helper = RestGenerationHelper.I;
     private int totalMethodsCount;
     private Map<ClassDocInfo, RestServiceInfo> restServices = new IdentityHashMap<>(100);
@@ -29,7 +29,7 @@ public class GenerationContext {
         this(new DefaultGenerationAdaptor());
     }
 
-    public GenerationContext(GenerationAdaptor generationAdaptor) {
+    public GenerationContext(SvrGenerationAdaptor generationAdaptor) {
         this.generationAdaptor = generationAdaptor;
     }
 
@@ -111,7 +111,7 @@ public class GenerationContext {
         this.baseOutputDir = baseOutputDir;
     }
 
-    GenerationAdaptor getGenerationAdaptor() {
+    SvrGenerationAdaptor getGenerationAdaptor() {
         return generationAdaptor;
     }
 }

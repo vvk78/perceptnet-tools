@@ -33,7 +33,8 @@ public class RestRegistryGenerator extends BaseGenerator<Collection<ClassInfo>> 
         println(";");
 
         println();
-        generateImports(BaseRestMethodRegistry.class, ServiceMethodsRegistry.class, RestMethodDescription.class, ConcurrentHashMap.class, HttpMethod.class);
+        generateImports(BaseRestMethodRegistry.class, ServiceMethodsRegistry.class,
+                RestMethodDescription.class, ConcurrentHashMap.class, HttpMethod.class);
         println();
 
         String registryClassName = ctx.getRegistrySimpleName();

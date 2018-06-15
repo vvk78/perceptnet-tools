@@ -148,6 +148,7 @@ public class RestRegistryGenerator extends BaseGenerator<Collection<ClassDocInfo
                     popIndentation();
                     println("));");
                     popIndentation();
+
                 }
             }
         }

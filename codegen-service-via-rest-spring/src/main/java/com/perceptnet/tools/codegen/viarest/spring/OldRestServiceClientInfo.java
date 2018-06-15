@@ -79,4 +79,5 @@ public class OldRestServiceClientInfo {
     public int getSingleMethods() {
         return totalMethods - overloadedMethods;
     }
+
 }
