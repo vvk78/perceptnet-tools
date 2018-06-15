@@ -1,16 +1,21 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
+import com.perceptnet.abstractions.Adaptor;
+import com.perceptnet.commons.utils.Joiner;
 import com.perceptnet.commons.utils.MapUtilsJ18;
 import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
+import com.perceptnet.tools.codegen.rest.RestMethodInfo;
+import com.perceptnet.tools.codegen.rest.RestMethodParamInfo;
 import com.perceptnet.tools.codegen.rest.RestServiceInfo;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 import com.perceptnet.tools.doclet.data.MethodDocInfo;
 
+import com.perceptnet.tools.doclet.data.ParamDocInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static com.perceptnet.commons.utils.CollectionUtilsJ18.*;
 import static com.perceptnet.tools.codegen.viarest.spring.SvrUtils.*;
 
 /**
@@ -40,8 +45,21 @@ public class GenerationDataBuilder {
             }
 
             String serviceClassName = serviceSetter.getParams().get(0).getType().getQualifiedName();
-            obtainServiceDoc(serviceClassName);
+            ClassDocInfo sd = obtainServiceDoc(serviceClassName);
+
+            rsi.setServiceDoc(sd);
+
+            //Merge rest methods with  corresponding service methods:
+            Map<String, RestMethodInfo> rsiMethodsMap = MapUtilsJ18.map(rsi.getRestMethods(), m -> {return restMethodKey(m);});
+            Map<String, MethodDocInfo> sdMethodsMap = MapUtilsJ18.map(sd.getMethods(), m -> {return restMethodKeyForServiceMethod((MethodDocInfo) m);});
+            for (Map.Entry<String, RestMethodInfo> e : rsiMethodsMap.entrySet()) {
+                e.getValue().setServiceMethodDoc(sdMethodsMap.get(e.getKey()));
+            }
         }
+    }
+
+    private Map<String, RestMethodInfo> methodsMap(RestServiceInfo rsi) {
+
     }
 
     private ClassDocInfo obtainServiceDoc(String serviceClassName) {
@@ -78,5 +96,31 @@ public class GenerationDataBuilder {
             }
         }
         return serviceSetter;
+    }
+
+    public String restMethodKey(RestMethodInfo rmi) {
+        return rmi.getControllerMethodDoc().getName() +
+            "(" +
+                Joiner.on(", ").adapt(
+                new Adaptor<RestMethodParamInfo, String>() {
+                    @Override
+                    public String adapt(RestMethodParamInfo restMethodParamInfo) {
+                        return restMethodParamInfo.getControllerParamDoc().getType().getQualifiedName();
+                    }
+                }).join(rmi.getParams()) +
+            ")";
+    }
+
+    public String restMethodKeyForServiceMethod(MethodDocInfo m) {
+        return m.getName() +
+                "(" +
+                Joiner.on(", ").adapt(
+                        new Adaptor<ParamDocInfo, String>() {
+                            @Override
+                            public String adapt(ParamDocInfo p) {
+                                return p.getType().getQualifiedName();
+                            }
+                        }).join(m.getParams()) +
+                ")";
     }
 }

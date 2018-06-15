@@ -42,6 +42,16 @@
                 <artifactId>utilsj18plus</artifactId>
                 <version>${perceptnet.commons.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.perceptnet.commons</groupId>
+                <artifactId>utils</artifactId>
+                <version>${perceptnet.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.perceptnet.commons</groupId>
+                <artifactId>abstractions</artifactId>
+                <version>${perceptnet.commons.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
