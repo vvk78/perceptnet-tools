@@ -3,6 +3,8 @@ package com.perceptnet.tools.codegen.viarest.spring;
 import com.perceptnet.abstractions.Adaptor;
 import com.perceptnet.commons.utils.IncExlRegexFilter;
 import com.perceptnet.commons.utils.OptionUtils;
+import com.perceptnet.restclient.RestRegistryDto;
+import com.perceptnet.restclient.ServiceMethodsRegistry;
 import com.perceptnet.tools.codegen.rest.RestServiceInfo;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 import com.perceptnet.tools.doclet.data.PersistenceService;
@@ -49,7 +51,6 @@ public class SvrGenerationManager {
             }
         }
 
-        GenerationData d = new GenerationData(controllerInfos, serviceInfos);
         SvrGenerationManager gm = new SvrGenerationManager(go.getAdaptor());
         controllerInfos = gm.filterControllersInfo(options.get("-inc"), options.get("-exl"), options.containsKey("-reg"), controllerInfos);
         gm.generate(controllerInfos, serviceInfos);
@@ -88,8 +89,11 @@ public class SvrGenerationManager {
 
     public void generate(Collection<ClassDocInfo> controllers, Collection<ClassDocInfo> services) {
         GenerationData data = new GenerationDataBuilder().build(controllers, services);
-        for (RestServiceInfo rsi : data.getRestServices().values()) {
 
+        RestRegistryDto registryDto = new RestRegistryDto();
+        for (RestServiceInfo rsi : data.getRestServices().values()) {
+            ServiceMethodsRegistry sr = new ServiceMethodsRegistry();
+            registryDto.getServices().
         }
     }
 }

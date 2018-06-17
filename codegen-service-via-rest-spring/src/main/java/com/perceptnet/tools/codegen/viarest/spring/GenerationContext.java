@@ -19,18 +19,20 @@ public class GenerationContext {
     private String encoding = "UTF-8";
 
     private SvrGenerationAdaptor generationAdaptor;
-    private RestGenerationHelper helper = RestGenerationHelper.I;
+    private RestGenerationHelper helper = new RestGenerationHelper();
+
+    private final GenerationData generationData;
     private int totalMethodsCount;
-    private Map<ClassDocInfo, RestServiceInfo> restServices = new IdentityHashMap<>(100);
     private String restServiceProviderQualifiedName;
     private String baseOutputDir;
 
-    public GenerationContext() {
-        this(new DefaultGenerationAdaptor());
+    public GenerationContext(GenerationData generationData) {
+        this(generationData, new DefaultGenerationAdaptor());
     }
 
-    public GenerationContext(SvrGenerationAdaptor generationAdaptor) {
+    public GenerationContext(SvrGenerationAdaptor generationAdaptor, GenerationData generationData) {
         this.generationAdaptor = generationAdaptor;
+        this.generationData = generationData;
     }
 
     public void incMethodsCount() {

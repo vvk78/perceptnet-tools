@@ -46,9 +46,9 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cedarsoftware</groupId>
+            <groupId>com.perceptnet.commons</groupId>
             <artifactId>json-io</artifactId>
-            <version>4.10.0</version>
+            <version>${perceptnet.commons.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
