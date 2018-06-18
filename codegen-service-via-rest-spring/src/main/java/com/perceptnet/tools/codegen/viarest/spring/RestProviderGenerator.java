@@ -1,9 +1,11 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
+import com.perceptnet.commons.utils.StringUtils;
 import com.perceptnet.restclient.BaseRestServiceProvider;
 import com.perceptnet.restclient.MessageConverter;
+import com.perceptnet.tools.ImportsHelper;
 import com.perceptnet.tools.codegen.BaseGenerator;
-import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
+import com.perceptnet.tools.doclet.data.ClassDocInfo;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -12,8 +14,6 @@ import java.util.Iterator;
  * created by vkorovkin (vkorovkin@gmail.com) on 12.12.2017
  */
 public class RestProviderGenerator extends BaseGenerator<Object> {
-
-    private RestGenerationHelper helper = RestGenerationHelper.I;
     private GenerationContext ctx;
 
     public RestProviderGenerator(GenerationContext ctx) {
@@ -34,11 +34,15 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
 
         generateImports(BaseRestServiceProvider.class, MessageConverter.class);
 
-        Collection<OldRestServiceClientInfo> restServices = ctx.getRestServices().values();
-        for (OldRestServiceClientInfo restServiceClientInfo : restServices) {
+
+        ImportsHelper imports = new ImportsHelper();
+        Collection<ClassDocInfo<?>> services = ctx.getData().getServicesByControllers().values();
+        for (ClassDocInfo sd : services) {
             print("import ");
-            print(restServiceClientInfo.getServiceQualifiedName());
+            print(sd.getQualifiedName());
             println(";");
+
+            imports.addImport(sd.getQualifiedName());
         }
 
         println();
@@ -79,9 +83,9 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
         println("new Class[] {");
         pushIndentation("    ");
 
-        for (Iterator<OldRestServiceClientInfo> iter = restServices.iterator(); iter.hasNext();) {
-            OldRestServiceClientInfo s = iter.next();
-            print(s.getServiceSimpleName());
+        for (Iterator<ClassDocInfo<?>> iter = services.iterator(); iter.hasNext();) {
+            ClassDocInfo<?> s = iter.next();
+            print(imports.actualName(s.getQualifiedName()));
             if (iter.hasNext()) {
                 println(".class,");
             } else {
@@ -93,16 +97,18 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
         popIndentation();
         println("}");
 
-        for (OldRestServiceClientInfo restService : restServices) {
+        for (ClassDocInfo<?> s : services) {
             println();
             print("public static ");
-            print(restService.getServiceSimpleName());
+            String actualName = imports.actualName(s.getQualifiedName());
+            print(actualName);
             print(" get");
-            print(restService.getServiceSimpleName());
+            String simpleName = StringUtils.getTail(actualName, ".");
+            print(simpleName);
             println("() {");
             pushIndentation("    ");
             print("return INSTANCE.getRestService(");
-            print(restService.getServiceSimpleName());
+            print(actualName);
             println(".class);");
             popIndentation();
             println("}");

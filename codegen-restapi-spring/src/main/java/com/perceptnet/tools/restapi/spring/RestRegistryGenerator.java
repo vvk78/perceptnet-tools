@@ -1,8 +1,8 @@
 package com.perceptnet.tools.restapi.spring;
 
 import com.perceptnet.restclient.BaseRestMethodRegistry;
-import com.perceptnet.restclient.HttpMethod;
-import com.perceptnet.restclient.RestMethodDescription;
+import com.perceptnet.restclient.dto.HttpMethod;
+import com.perceptnet.restclient.dto.RestMethodDescription;
 import com.perceptnet.restclient.ServiceMethodsRegistry;
 
 import java.util.Collection;

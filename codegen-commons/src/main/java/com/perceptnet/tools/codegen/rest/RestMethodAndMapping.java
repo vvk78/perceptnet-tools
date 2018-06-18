@@ -1,6 +1,7 @@
 package com.perceptnet.tools.codegen.rest;
 
-import com.perceptnet.restclient.HttpMethod;
+
+import com.perceptnet.restclient.dto.HttpMethod;
 
 /**
  * created by vkorovkin on 14.06.2018

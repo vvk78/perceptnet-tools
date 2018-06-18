@@ -1,7 +1,7 @@
 package com.perceptnet.tools.doclet.data;
 
 
-import com.perceptnet.commons.json.JsonPersistenceService;
+import com.perceptnet.commons.json.JsonService;
 
 import java.util.Collection;
 
@@ -11,11 +11,11 @@ import java.util.Collection;
 public class PersistenceService {
 
     public void saveClassInfos(String fileName, Collection<ClassDocInfo> classesInfo) {
-        new JsonPersistenceService().saveItems(fileName, classesInfo);
+        new JsonService().saveItem(fileName, classesInfo);
     }
 
     public Collection<ClassDocInfo> loadClassInfos(String fileName) {
-        return (Collection<ClassDocInfo>) (new JsonPersistenceService().loadItems(fileName));
+        return (Collection<ClassDocInfo>) (new JsonService().loadItem(fileName));
     }
 
 }

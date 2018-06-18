@@ -1,7 +1,7 @@
 package com.perceptnet.tools.codegen.rest;
 
-import com.perceptnet.restclient.HttpMethod;
-import com.perceptnet.restclient.RestMethodDescription;
+import com.perceptnet.restclient.dto.HttpMethod;
+import com.perceptnet.restclient.dto.RestMethodDescription;
 import com.perceptnet.tools.doclet.data.AnnotationInfo;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 import com.perceptnet.tools.doclet.data.MethodDocInfo;
@@ -242,6 +242,23 @@ public class RestGenerationHelper {
         }
 
         return new RestMethodDescription(m.getHttpMethod(), pathItems.toArray(new String[pathItems.size()]), pathArgumentIndices, requestBodyIndex);
+    }
+
+    public String buildServiceMethodQualifiedSignature(MethodDocInfo<?> serviceMethodDoc) {
+        StringBuilder b = new StringBuilder();
+        b.append(serviceMethodDoc.getName());
+        b.append("(");
+
+        boolean first = true;
+        for (ParamDocInfo p : serviceMethodDoc.getParams()) {
+            if (!first) {
+                b.append(",");
+            }
+            first = false;
+            b.append(p.getType().getQualifiedName());
+        }
+        b.append(")");
+        return b.toString();
     }
 
 

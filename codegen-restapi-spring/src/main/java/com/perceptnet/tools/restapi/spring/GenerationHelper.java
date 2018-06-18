@@ -1,8 +1,8 @@
 package com.perceptnet.tools.restapi.spring;
 
 import com.google.common.base.Joiner;
-import com.perceptnet.restclient.HttpMethod;
-import com.perceptnet.restclient.RestMethodDescription;
+import com.perceptnet.restclient.dto.HttpMethod;
+import com.perceptnet.restclient.dto.RestMethodDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

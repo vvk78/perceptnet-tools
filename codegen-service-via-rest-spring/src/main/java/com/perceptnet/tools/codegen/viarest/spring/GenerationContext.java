@@ -1,51 +1,34 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
 import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
-import com.perceptnet.tools.codegen.rest.RestServiceInfo;
 import com.perceptnet.tools.doclet.DocInfoUtils;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 
-import java.util.IdentityHashMap;
+import java.util.Collection;
 import java.util.Map;
 
 /**
  * created by vkorovkin (vkorovkin@gmail.com) on 06.12.2017
  */
 public class GenerationContext {
-    /**
-     * Encoding sources are generated in.
-     * todo To be made a setting.
-     */
-    private String encoding = "UTF-8";
 
-    private SvrGenerationAdaptor generationAdaptor;
+    private SvrGenerationAdaptor generationAdaptor = new DefaultSvrGenerationAdaptor();
     private RestGenerationHelper helper = new RestGenerationHelper();
 
-    private final GenerationData generationData;
-    private int totalMethodsCount;
+    private GenerationData data;
     private String restServiceProviderQualifiedName;
     private String baseOutputDir;
 
-    public GenerationContext(GenerationData generationData) {
-        this(generationData, new DefaultGenerationAdaptor());
+
+    GenerationContext(GenerationData data, SvrGenerationAdaptor generationAdaptor) {
+        if (data == null) {
+            throw new NullPointerException("Data is null");
+        }
+        this.generationAdaptor = generationAdaptor == null ? new DefaultSvrGenerationAdaptor() : generationAdaptor;
+        this.data = data;
     }
 
-    public GenerationContext(SvrGenerationAdaptor generationAdaptor, GenerationData generationData) {
-        this.generationAdaptor = generationAdaptor;
-        this.generationData = generationData;
-    }
 
-    public void incMethodsCount() {
-        totalMethodsCount++;
-    }
-
-    public int getTotalMethodsCount() {
-        return totalMethodsCount;
-    }
-
-    public Map<ClassDocInfo, RestServiceInfo> getRestServices() {
-        return restServices;
-    }
 
     public String getServiceProviderQualifiedName() {
         if (restServiceProviderQualifiedName == null) {
@@ -53,7 +36,7 @@ public class GenerationContext {
             if (result != null) {
                 restServiceProviderQualifiedName = result;
             } else {
-                String pkg = DocInfoUtils.getMostGeneralPackage(restServices.values());
+                String pkg = DocInfoUtils.getMostGeneralPackage(data.getServicesByControllers().values());
                 if (pkg != null) {
                     restServiceProviderQualifiedName = pkg + ".RestServiceProvider";
                 } else {
@@ -95,10 +78,6 @@ public class GenerationContext {
         return s.substring(idx + 1);
     }
 
-    public String getEncoding() {
-        return encoding;
-    }
-
     public String getBaseOutputDir() {
         if (baseOutputDir == null) {
             String str = System.getProperty("restapigen.BaseOutputDir");
@@ -111,6 +90,10 @@ public class GenerationContext {
 
     public void setBaseOutputDir(String baseOutputDir) {
         this.baseOutputDir = baseOutputDir;
+    }
+
+    public GenerationData getData() {
+        return data;
     }
 
     SvrGenerationAdaptor getGenerationAdaptor() {

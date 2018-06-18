@@ -53,6 +53,11 @@
                 <artifactId>abstractions</artifactId>
                 <version>${perceptnet.commons.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.perceptnet.commons</groupId>
+                <artifactId>restclient-base-dto</artifactId>
+                <version>${perceptnet.commons.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

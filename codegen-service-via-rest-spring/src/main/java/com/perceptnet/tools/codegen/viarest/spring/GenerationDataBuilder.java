@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.perceptnet.commons.utils.MapUtilsJ18.map;
@@ -26,15 +27,22 @@ import static com.perceptnet.tools.codegen.viarest.spring.SvrUtils.*;
 class GenerationDataBuilder {
     private static final Logger log = LoggerFactory.getLogger(GenerationDataBuilder.class);
 
-    private GenerationData data;
+    private Collection<ClassDocInfo> controllers;
+    private Collection<ClassDocInfo> services;
     private Map<String, ClassDocInfo> servicesOnNames;
 
     public GenerationData build(Collection<ClassDocInfo> controllers, Collection<ClassDocInfo> services) {
         assertNotUsedYet();
-        data = new GenerationData(controllers, services);
+        this.controllers = controllers;
+        this.services = services;
+
+        Map<ClassDocInfo<?>, ClassDocInfo<?>> servicesByControllers = new HashMap<>(services.size());
+
+        Map<String, RestServiceInfo> rsiMap = new HashMap<>(services.size());
+        this.servicesOnNames = map(services, ClassDocInfo::getQualifiedName);
 
         RestGenerationHelper h = new RestGenerationHelper();
-        for (ClassDocInfo<?> cd : data.getControllers()) {
+        for (ClassDocInfo<?> cd : controllers) {
             RestServiceInfo rsi = h.extractRestServiceInfoFromController(cd);
             if (rsi.getRestMethods().isEmpty()) {
                 continue; //no rest methods
@@ -62,33 +70,28 @@ class GenerationDataBuilder {
                 e.getValue().setServiceMethodDoc(sdMethod);
             }
             if (mergedMethodsNum > 0) {
-                data.getRestServices().put(serviceClassName, rsi);
+                rsiMap.put(serviceClassName, rsi);
+                ClassDocInfo<?> oldMapping = servicesByControllers.put(cd, sd);
+                if (oldMapping != null) {
+                    svrViolation("Service " + sd.getQualifiedName() + " is used in several controllers");
+                }
             } else {
                 log.warn("Not actual rest service methods in controller {}", cd);
             }
         }
 
-        return data;
+        GenerationData result = new GenerationData(servicesByControllers, servicesOnNames, rsiMap);
+
+        return result;
     }
 
 
     private ClassDocInfo obtainServiceDoc(String serviceClassName) {
-        ClassDocInfo serviceDoc = findServiceDoc(serviceClassName);
+        ClassDocInfo serviceDoc = servicesOnNames.get(serviceClassName);
         if (serviceDoc == null) {
             throw new IllegalStateException("No service doc found for " + serviceClassName);
         }
         return serviceDoc;
-    }
-
-    private Map<String, ClassDocInfo> getServicesOnNames() {
-        if (servicesOnNames == null) {
-            servicesOnNames = map(data.getServices(), ClassDocInfo::getQualifiedName);
-        }
-        return servicesOnNames;
-    }
-
-    private ClassDocInfo findServiceDoc(String qualifiedName) {
-        return getServicesOnNames().get(qualifiedName);
     }
 
     /**
@@ -138,7 +141,7 @@ class GenerationDataBuilder {
      * Asserts builder instance has not been used yet.
      */
     private void assertNotUsedYet() {
-        if (data != null) {
+        if (controllers != null || services != null) {
             //programmatic error - exception for developer:
             throw new IllegalStateException("This " + this.getClass().getSimpleName() + " has been used once. Create a new one");
         }

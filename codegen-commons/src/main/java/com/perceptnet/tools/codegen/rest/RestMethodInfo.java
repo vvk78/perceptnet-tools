@@ -1,6 +1,6 @@
 package com.perceptnet.tools.codegen.rest;
 
-import com.perceptnet.restclient.HttpMethod;
+import com.perceptnet.restclient.dto.HttpMethod;
 import com.perceptnet.tools.doclet.data.MethodDocInfo;
 
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.List;
  * created by vkorovkin on 13.06.2018
  */
 public class RestMethodInfo {
-    private MethodDocInfo serviceMethodDoc;
-    private MethodDocInfo controllerMethodDoc;
+    private MethodDocInfo<?> serviceMethodDoc;
+    private MethodDocInfo<?> controllerMethodDoc;
 
     private HttpMethod httpMethod;
     /**

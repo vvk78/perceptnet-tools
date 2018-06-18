@@ -1,6 +1,6 @@
 package com.perceptnet.tools.restapi.spring;
 
-import com.perceptnet.restclient.HttpMethod;
+import com.perceptnet.restclient.dto.HttpMethod;
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;

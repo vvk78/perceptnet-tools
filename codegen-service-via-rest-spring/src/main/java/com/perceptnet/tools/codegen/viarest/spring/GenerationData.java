@@ -1,55 +1,44 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
+import com.perceptnet.commons.utils.MapUtils;
 import com.perceptnet.tools.codegen.rest.RestServiceInfo;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * This class keeps data about being processed dolcet descriptors.
- *
- * created by vkorovkin on 13.06.2018
+ * created by vkorovkin on 18.06.2018
  */
 class GenerationData {
-    private Collection<ClassDocInfo> services;
-    private Collection<ClassDocInfo> controllers;
+    private Map<ClassDocInfo<?>, ClassDocInfo<?>> servicesByControllers;
+    private Map<ClassDocInfo<?>, ClassDocInfo<?>> controllersByServices;
 
-    /**
-     * Map of server side rest service descriptors on qualified service class name
-     */
-    private Map<String, RestServiceInfo> restServices;
+    private Map<String, ClassDocInfo> servicesOnNames;
 
-    /**
-     * Constructs generation data model from raw doclet data
-     *
-     * @param services list of service doclet descriptors
-     * @param controllers list of controller doclet decriptos
-     */
-    public GenerationData(Collection<ClassDocInfo> controllers, Collection<ClassDocInfo> services) {
-        if (controllers == null) {
-            throw new NullPointerException("Controllers is null");
-        }
-        if (services == null) {
-            throw new NullPointerException("Services is null");
-        }
-        this.controllers = controllers;
-        this.services = services;
+    private Map<String, RestServiceInfo> restServicesByServiceName;
 
-        this.restServices = new HashMap<>(Math.max(10, controllers.size()));
+    public GenerationData(Map<ClassDocInfo<?>, ClassDocInfo<?>> servicesByControllers,
+                                Map<String, ClassDocInfo> servicesByNames,
+                                    Map<String, RestServiceInfo> restServicesByServiceName) {
+        this.servicesByControllers = servicesByControllers;
+        this.controllersByServices = MapUtils.changeKeyAndValues(servicesByControllers);
+        this.servicesOnNames = servicesByNames;
+        this.restServicesByServiceName = restServicesByServiceName;
     }
 
-    public Collection<ClassDocInfo> getServices() {
-        return services;
+    public Map<ClassDocInfo<?>, ClassDocInfo<?>> getServicesByControllers() {
+        return servicesByControllers;
     }
 
-    public Collection<ClassDocInfo> getControllers() {
-        return controllers;
+    public Map<ClassDocInfo<?>, ClassDocInfo<?>> getControllersByServices() {
+        return controllersByServices;
     }
 
-    public Map<String, RestServiceInfo> getRestServices() {
-        return restServices;
+    public Map<String, ClassDocInfo> getServicesOnNames() {
+        return servicesOnNames;
+    }
+
+    public Map<String, RestServiceInfo> getRestServicesByServiceName() {
+        return restServicesByServiceName;
     }
 }

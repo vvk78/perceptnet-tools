@@ -1,5 +1,7 @@
 package com.perceptnet.tools.doclet.data;
 
+import com.perceptnet.tools.ImportsHelper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,13 +14,12 @@ import java.util.Set;
  * created by vkorovkin on 05.06.2018
  */
 public class ClassDocInfo<SELF extends ClassDocInfo> extends BaseItemDocInfo<SELF> {
-    private static final Set<String> PRIMITIVES = new HashSet<>(Arrays.asList(
-            new String[]{"byte", "short", "int", "long", "float", "double", "char", "boolean", "void"}));
+
 
     private String qualifiedName;
     private boolean isInterface;
 
-    private Map<String, String> imports = new HashMap<>(50);
+    private ImportsHelper imports = new ImportsHelper();
     private List<MethodDocInfo> methods = new ArrayList<>();
 
     public ClassDocInfo() {
@@ -48,39 +49,14 @@ public class ClassDocInfo<SELF extends ClassDocInfo> extends BaseItemDocInfo<SEL
         return (SELF) this;
     }
 
-    public Map<String, String> getImports() {
-        return imports;
-    }
 
     public List<MethodDocInfo> getMethods() {
         return methods;
     }
 
-    /**
-     * Adds full type name to imports and returns actual type name to be used in code (it may be short, or may be full if there are synonyms).
-     */
-    private String addImport(String qualifiedTypeName) {
-        String simpleName = qualifiedTypeName.substring(qualifiedTypeName.lastIndexOf(".") + 1, qualifiedTypeName.length());
-        if (qualifiedTypeName.startsWith("java.lang.") || PRIMITIVES.contains(qualifiedTypeName)) {
-            return simpleName;
-        }
-
-        String result = imports.get(simpleName);
-        if (result == null) {
-            imports.put(simpleName, qualifiedTypeName);
-            return simpleName;
-        } else {
-            if (result.equals(qualifiedTypeName)) {
-                return simpleName;
-            } else {
-                imports.put(qualifiedTypeName, qualifiedTypeName);
-                return qualifiedTypeName;
-            }
-        }
-    }
 
     public TypeInfo addImportType(String qualifiedTypeName) {
-        return new TypeInfo(qualifiedTypeName, addImport(qualifiedTypeName));
+        return new TypeInfo(qualifiedTypeName, imports.addImport(qualifiedTypeName));
     }
 
     @Override

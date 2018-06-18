@@ -4,6 +4,8 @@ package com.perceptnet.tools.codegen;
  * created by vkorovkin (vkorovkin@gmail.com) on 06.12.2017
  */
 public class GenerationUtils {
+
+
     public static String simpleName(String qualifiedName) {
         if (qualifiedName == null) {
             return null;

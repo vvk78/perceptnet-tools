@@ -29,8 +29,7 @@
         </dependency>
         <dependency>
             <groupId>com.perceptnet.commons</groupId>
-            <artifactId>restclient-base</artifactId>
-            <version>${perceptnet.commons.version}</version>
+            <artifactId>restclient-base-dto</artifactId>
         </dependency>
 
         <dependency>
