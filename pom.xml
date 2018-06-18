@@ -17,6 +17,7 @@
         <module>codegen-commons</module>
         <module>codegen-service-via-rest-spring</module>
         <module>example</module>
+        <module>integration-test</module>
     </modules>
 
     <dependencyManagement>

@@ -177,6 +177,9 @@ public class RestGenerationHelper {
 
     public RestMethodDescription createRestDescription(RestServiceInfo rsi, RestMethodInfo m) {
         String basePath = rsi.getControllerBaseRestMapping();
+        if (basePath == null) {
+            basePath = "";
+        }
         int requestBodyIndex = -1;
         List<String> pathItems = new ArrayList<>();
         Map<String, Integer> pathArgumentIndexes = new LinkedHashMap<>();
@@ -186,7 +189,7 @@ public class RestGenerationHelper {
             if (item instanceof String) {
                 String s = (String) item;
                 if (i == 0) {
-                    if (basePath.endsWith("/") && s.startsWith("/")) {
+                    if (basePath.isEmpty() || basePath.endsWith("/") && s.startsWith("/")) {
                         s = basePath + s.substring(1);
                     } else if (!s.startsWith("/") && !basePath.endsWith("/")) {
                         s = basePath + "/" + s;

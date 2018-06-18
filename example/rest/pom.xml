@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>application</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>com.perceptnet.tools.example</groupId>
+    <artifactId>rest</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -33,13 +33,13 @@
         </dependency>
 
         <dependency>
-            <groupId>com.example</groupId>
+            <groupId>com.perceptnet.tools.example</groupId>
             <artifactId>service</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.example</groupId>
+            <groupId>com.perceptnet.tools.example</groupId>
             <artifactId>service-impl</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
@@ -51,6 +51,92 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-restapi</id>
+                        <!--<phase>generate-sources</phase>-->
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                        <configuration>
+                            <doclet>com.perceptnet.tools.doclet.ServiceInfoCollectorDoclet</doclet>
+                            <docletArtifact>
+                                <groupId>com.perceptnet.tools</groupId>
+                                <artifactId>doclet-service-info-collector</artifactId>
+                                <version>1.0-SNAPSHOT</version>
+                            </docletArtifact>
+                            <useStandardDocletOptions>false</useStandardDocletOptions>
+                            <additionalOptions>-saveInfoAs ${project.build.directory}/generated-resources/example_controllers.json -inc *Controller</additionalOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <!-- here the phase you need -->
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-resources</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <!-- default -->
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/example_controllers.json</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <!-- extra jar with rest-api description -->
+                    <execution>
+                        <id>pkg-rest-api-info</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>classdoc-info</classifier>
+                            <includes>
+                                <include>**/example_controllers.json</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

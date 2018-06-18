@@ -38,8 +38,18 @@ public class ServiceInfoCollector {
      */
     public Map<String, ClassDocInfo> collectServicesInfo(RootDoc rootDoc) {
         Map<String, ClassDocInfo> result = new HashMap<>(50); //50 is typical number of services in one micro service project
-        Stream<ClassDoc> stream = Stream.of(rootDoc.classes());
-        stream.filter(classDoc -> classDoc.isInterface() && classDoc.name().endsWith("Service")).forEach(classDoc -> {
+        System.out.println("---------Inc filter:\n" + options.getItemNamesFilter());
+        for (ClassDoc classDoc : rootDoc.classes()) {
+            if (options.getItemNamesFilter() != null && !options.getItemNamesFilter().isIncluded(classDoc.name())) {
+                continue;
+            }
+            if (options.getCollectedItemTypes() != null && !options.getCollectedItemTypes().isEmpty()) {
+                ItemType type = classDoc.isInterface() ? ItemType.INTERFACE : ItemType.CLASS;
+                if (!options.getCollectedItemTypes().contains(type)) {
+                    continue;
+                }
+            }
+
             ClassDocInfo ci = new ClassDocInfo();
             ci.setRawComment(classDoc.getRawCommentText());
             ci.setQualifiedName(classDoc.qualifiedName());
@@ -47,7 +57,8 @@ public class ServiceInfoCollector {
             ci.getMethods().addAll(collectMethodInfo(ci, classDoc));
             ci.setInterface(classDoc.isInterface());
             result.put(ci.getQualifiedName(), ci);
-        });
+        }
+
         return result;
     }
 

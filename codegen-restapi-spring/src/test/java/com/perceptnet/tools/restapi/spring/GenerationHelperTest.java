@@ -1,7 +1,7 @@
 package com.perceptnet.tools.restapi.spring;
 
 import com.perceptnet.commons.tests.TestGroups;
-import com.perceptnet.restclient.HttpMethod;
+import com.perceptnet.restclient.dto.HttpMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

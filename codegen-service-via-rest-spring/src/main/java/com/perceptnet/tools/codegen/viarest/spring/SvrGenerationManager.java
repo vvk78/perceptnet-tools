@@ -127,9 +127,11 @@ public class SvrGenerationManager {
             ServiceRestRegistryDto serviceDto = new ServiceRestRegistryDto();
             registryDto.getServices().put(rsi.getServiceDoc().getQualifiedName(), serviceDto);
             for (RestMethodInfo m : rsi.getRestMethods()) {
-                String methodKey = helper.buildServiceMethodQualifiedSignature(m.getServiceMethodDoc());
-                RestMethodDescription rmd = helper.createRestDescription(rsi, m);
-                serviceDto.getMethods().put(methodKey, rmd);
+                if (m.getServiceMethodDoc() != null) {
+                    String methodKey = helper.buildServiceMethodQualifiedSignature(m.getServiceMethodDoc());
+                    RestMethodDescription rmd = helper.createRestDescription(rsi, m);
+                    serviceDto.getMethods().put(methodKey, rmd);
+                }
             }
         }
         return registryDto;

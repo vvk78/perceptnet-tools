@@ -14,10 +14,11 @@ import java.util.Set;
  * created by vkorovkin on 08.06.2018
  */
 public class CollectorOptions<SELF extends CollectorOptions> {
-    private Set<ItemType> collectedItemTypes = new HashSet<>();
+    private Set<ItemType> collectedItemTypes;
     private IncExlRegexFilter itemNamesFilter;
     private boolean collectParamAnnotations;
     private boolean collectClassAnnotations;
+    private String outputFileName;
 
     public CollectorOptions() {
     }
@@ -55,8 +56,15 @@ public class CollectorOptions<SELF extends CollectorOptions> {
     }
 
     public SELF addCollectedItemTypes(ItemType ... types) {
+        if (collectedItemTypes == null) {
+            collectedItemTypes = new HashSet<>();
+        }
         collectedItemTypes.addAll(Arrays.asList(types));
         return (SELF) this;
+    }
+
+    public void setCollectedItemTypes(Set<ItemType> collectedItemTypes) {
+        this.collectedItemTypes = collectedItemTypes;
     }
 
     public IncExlRegexFilter getItemNamesFilter() {
@@ -66,5 +74,13 @@ public class CollectorOptions<SELF extends CollectorOptions> {
     public SELF setItemNamesFilter(IncExlRegexFilter itemNamesFilter) {
         this.itemNamesFilter = itemNamesFilter;
         return (SELF) this;
+    }
+
+    public String getOutputFileName() {
+        return outputFileName;
+    }
+
+    public void setOutputFileName(String outputFileName) {
+        this.outputFileName = outputFileName;
     }
 }

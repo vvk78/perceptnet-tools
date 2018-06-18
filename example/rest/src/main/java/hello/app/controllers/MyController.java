@@ -8,26 +8,26 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-public class MyControllers {
+public class MyController {
     private MyService myService;
 
     @GetMapping("/")
-    public MessageDto helloMessage() {
+    public MessageDto getMessage() {
         return myService.getMessage();
     }
 
     @PostMapping("/")
-    public MessageDto getBackMessage(@RequestBody MessageDto messageDto) {
+    public MessageDto setMessage(@RequestBody MessageDto messageDto) {
         return myService.setMessage(messageDto);
     }
 
     @PostMapping("/ip")
-    public MessageDto getMessageIP(HttpServletRequest request) {
+    public MessageDto setMessageIp(HttpServletRequest request) {
         return myService.setMessageIp(request.getRemoteAddr());
     }
 
     @PostMapping("/{message}")
-    public MessageDto getMessageWithUrlAndIP(@PathVariable("message") String message, HttpServletRequest request) {
+    public MessageDto getMessageWithUrlAndIP(@PathVariable("message") String message, String remoteAddr, HttpServletRequest request) {
         return myService.setMessageUrlAndIp(message, request.getRemoteAddr());
     }
 

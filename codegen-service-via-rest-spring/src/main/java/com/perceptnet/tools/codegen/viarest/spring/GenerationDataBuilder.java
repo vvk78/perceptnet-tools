@@ -54,7 +54,7 @@ class GenerationDataBuilder {
             }
 
             String serviceClassName = serviceSetter.getParams().get(0).getType().getQualifiedName();
-            ClassDocInfo sd = obtainServiceDoc(serviceClassName);
+            ClassDocInfo<?> sd = obtainServiceDoc(serviceClassName);
 
             rsi.setServiceDoc(sd);
 
@@ -66,8 +66,8 @@ class GenerationDataBuilder {
                 MethodDocInfo sdMethod = sdMethodsMap.get(e.getKey());
                 if (sdMethod != null) {
                     mergedMethodsNum++;
+                    e.getValue().setServiceMethodDoc(sdMethod);
                 }
-                e.getValue().setServiceMethodDoc(sdMethod);
             }
             if (mergedMethodsNum > 0) {
                 rsiMap.put(serviceClassName, rsi);
@@ -76,7 +76,7 @@ class GenerationDataBuilder {
                     svrViolation("Service " + sd.getQualifiedName() + " is used in several controllers");
                 }
             } else {
-                log.warn("Not actual rest service methods in controller {}", cd);
+                log.warn("No actual rest service methods in controller {}", cd);
             }
         }
 
