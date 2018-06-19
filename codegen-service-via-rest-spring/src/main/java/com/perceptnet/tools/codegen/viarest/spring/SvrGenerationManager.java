@@ -4,6 +4,7 @@ import com.perceptnet.abstractions.Adaptor;
 import com.perceptnet.commons.json.JsonService;
 import com.perceptnet.commons.utils.IncExlRegexFilter;
 import com.perceptnet.commons.utils.OptionUtils;
+import com.perceptnet.restclient.BaseRestMethodRegistry;
 import com.perceptnet.restclient.dto.ModuleRestRegistryDto;
 import com.perceptnet.restclient.dto.RestMethodDescription;
 import com.perceptnet.restclient.dto.ServiceRestRegistryDto;
@@ -121,7 +122,7 @@ public class SvrGenerationManager {
 
     }
 
-    private ModuleRestRegistryDto buildRegistryDto(Map<String, RestServiceInfo> rsiData) {
+    public ModuleRestRegistryDto buildRegistryDto(Map<String, RestServiceInfo> rsiData) {
         ModuleRestRegistryDto registryDto = new ModuleRestRegistryDto();
         for (RestServiceInfo rsi : rsiData.values()) {
             ServiceRestRegistryDto serviceDto = new ServiceRestRegistryDto();
