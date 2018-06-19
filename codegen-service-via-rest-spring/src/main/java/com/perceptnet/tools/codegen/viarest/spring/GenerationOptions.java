@@ -28,7 +28,6 @@ class GenerationOptions {
      * <dependency>
      * <groupId>com.perceptnet.commons</groupId>
      * <artifactId>json-io</artifactId>
-     * <scope>runtime</scope>
      * <version>${perceptnet.commons.version}</version>
      * </dependency>
      */
