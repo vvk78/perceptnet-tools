@@ -1,5 +1,7 @@
 package com.perceptnet.tools;
 
+import com.perceptnet.commons.utils.MapUtils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +17,8 @@ public class ImportsHelper {
 
     private Map<String, String> imports = new HashMap<>(50);
 
+    private Map<String, String> importsSwapped;
+
     /**
      * Adds full type name to imports and returns actual type name to be used in code (it may be short, or may be full if there are synonyms).
      */
@@ -27,12 +31,14 @@ public class ImportsHelper {
         String result = imports.get(simpleName);
         if (result == null) {
             imports.put(simpleName, qualifiedTypeName);
+            importsSwapped = null;
             return simpleName;
         } else {
             if (result.equals(qualifiedTypeName)) {
                 return simpleName;
             } else {
                 imports.put(qualifiedTypeName, qualifiedTypeName);
+                importsSwapped = null;
                 return qualifiedTypeName;
             }
         }
@@ -43,9 +49,12 @@ public class ImportsHelper {
     }
 
     public String actualName(String qualifiedName) {
-        String result = imports.get(qualifiedName);
+        if (importsSwapped == null) {
+            importsSwapped = MapUtils.changeKeyAndValues(imports);
+        }
+        String result = importsSwapped.get(qualifiedName);
         if (result == null) {
-            throw new IllegalStateException("Class " + qualifiedName + " is not imported");
+            return qualifiedName;
         }
         return result;
     }

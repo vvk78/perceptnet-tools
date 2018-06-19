@@ -21,7 +21,11 @@ public class MyController {
         return myService.setMessage(messageDto);
     }
 
+    /**
+     *
+     */
     @PostMapping("/ip")
+    //@ImplicitRestParam("request", linkedTo ="remoteAddr")
     public MessageDto setMessageIp(HttpServletRequest request) {
         return myService.setMessageIp(request.getRemoteAddr());
     }

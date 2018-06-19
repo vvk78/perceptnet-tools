@@ -1,5 +1,6 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
+import com.perceptnet.commons.utils.ClassUtils;
 import com.perceptnet.commons.utils.StringUtils;
 import com.perceptnet.restclient.BaseRestServiceProvider;
 import com.perceptnet.restclient.MessageConverter;
@@ -103,7 +104,7 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
             String actualName = imports.actualName(s.getQualifiedName());
             print(actualName);
             print(" get");
-            String simpleName = StringUtils.getTail(actualName, ".");
+            String simpleName = ClassUtils.simpleName(s.getQualifiedName());
             print(simpleName);
             println("() {");
             pushIndentation("    ");

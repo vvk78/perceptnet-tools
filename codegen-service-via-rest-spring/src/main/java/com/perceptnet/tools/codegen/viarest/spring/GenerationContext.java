@@ -1,5 +1,6 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
+import com.perceptnet.commons.utils.ClassUtils;
 import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
 import com.perceptnet.tools.doclet.DocInfoUtils;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
@@ -70,12 +71,7 @@ public class GenerationContext {
 
 
     public String getServiceProviderSimpleName() {
-        String s = getServiceProviderQualifiedName();
-        int idx = s.lastIndexOf(".");
-        if (idx == -1) {
-            return s;
-        }
-        return s.substring(idx + 1);
+        return ClassUtils.simpleName(getServiceProviderQualifiedName());
     }
 
     public String getBaseOutputDir() {
