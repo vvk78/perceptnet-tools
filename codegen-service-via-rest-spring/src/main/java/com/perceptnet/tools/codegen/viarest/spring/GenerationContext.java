@@ -3,29 +3,25 @@ package com.perceptnet.tools.codegen.viarest.spring;
 import com.perceptnet.commons.utils.ClassUtils;
 import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
 import com.perceptnet.tools.doclet.DocInfoUtils;
-import com.perceptnet.tools.doclet.data.ClassDocInfo;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * created by vkorovkin (vkorovkin@gmail.com) on 06.12.2017
  */
 public class GenerationContext {
 
-    private SvrGenerationAdaptor generationAdaptor = new DefaultSvrGenerationAdaptor();
     private RestGenerationHelper helper = new RestGenerationHelper();
 
+    private GenerationOptions options;
     private GenerationData data;
     private String restServiceProviderQualifiedName;
     private String baseOutputDir;
 
 
-    GenerationContext(GenerationData data, SvrGenerationAdaptor generationAdaptor) {
+    GenerationContext(GenerationData data, GenerationOptions options) {
         if (data == null) {
             throw new NullPointerException("Data is null");
         }
-        this.generationAdaptor = generationAdaptor == null ? new DefaultSvrGenerationAdaptor() : generationAdaptor;
+        this.options = options == null ? new GenerationOptions() : options;
         this.data = data;
     }
 
@@ -92,7 +88,11 @@ public class GenerationContext {
         return data;
     }
 
-    SvrGenerationAdaptor getGenerationAdaptor() {
-        return generationAdaptor;
+    public GenerationOptions getOptions() {
+        return options;
+    }
+
+    public RestGenerationHelper getHelper() {
+        return helper;
     }
 }

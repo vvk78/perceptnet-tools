@@ -25,17 +25,17 @@ import static com.perceptnet.commons.utils.StringUtils.unquote;
  * created by vkorovkin on 15.06.2018
  */
 public class SvrGenerationManager {
+    private GenerationOptions options;
     private RestGenerationHelper helper;
-    private String outputFileName;
 
     public static void main(String[] args) {
-        Map<String, List<String>> options = OptionUtils.parseOptions(args);
-
         Collection<ClassDocInfo> controllerInfos = null;
         Collection<ClassDocInfo> serviceInfos = null;
         String outputFileName = null;
         PersistenceService p = new PersistenceService();
 
+        //Parse options
+        Map<String, List<String>> options = OptionUtils.parseOptions(args);
         GenerationOptions go = new GenerationOptions();
         for (Map.Entry<String, List<String>> entry : options.entrySet()) {
             String optionName = entry.getKey();
@@ -59,20 +59,21 @@ public class SvrGenerationManager {
                 if (optionArgs.isEmpty()) {
                     throw new IllegalArgumentException("Required value of -f option is not specified");
                 }
-                outputFileName = optionArgs.get(0);
+                go.setRestRegistryOutputJsonFileName(optionArgs.get(0));
+            } else if ("-autoDiscovery".equals(optionName)) {
+                go.setRestRegistryAutoDiscoveryInResources(true);
             }
         }
 
-        SvrGenerationManager gm = new SvrGenerationManager(go.getAdaptor());
-        gm.outputFileName = outputFileName;
+        go.validate();
+        SvrGenerationManager gm = new SvrGenerationManager(go);
         controllerInfos = gm.filterControllersInfo(options.get("-inc"), options.get("-exl"), options.containsKey("-reg"), controllerInfos);
         gm.generate(controllerInfos, serviceInfos);
     }
 
-    private SvrGenerationAdaptor adaptor;
 
-    public SvrGenerationManager(SvrGenerationAdaptor adaptor) {
-        this.adaptor = adaptor;
+    public SvrGenerationManager(GenerationOptions options) {
+        this.options = options == null ? new GenerationOptions() : options;
         this.helper = new RestGenerationHelper();
     }
 
@@ -105,13 +106,13 @@ public class SvrGenerationManager {
         GenerationDataBuilder b = new GenerationDataBuilder();
 
         GenerationData d = b.build(controllers, services);
-        GenerationContext ctx = new GenerationContext(d, adaptor);
+        GenerationContext ctx = new GenerationContext(d, options);
 
         ModuleRestRegistryDto registryDto = buildRegistryDto(d.getRestServicesByServiceName());
 
         JsonService js = new JsonService();
-        if (outputFileName != null) {
-            js.saveItem(outputFileName, registryDto);
+        if (options.getRestRegistryOutputJsonFileName() != null) {
+            js.saveItem(options.getRestRegistryOutputJsonFileName(), registryDto);
         } else {
             js.saveItem(System.out, registryDto);
         }

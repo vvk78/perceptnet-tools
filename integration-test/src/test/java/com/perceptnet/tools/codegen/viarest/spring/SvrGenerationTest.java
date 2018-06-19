@@ -46,6 +46,21 @@ public class SvrGenerationTest {
     }
 
     @Test(groups = {INTEGRATION})
+    public void testRestServiceProviderGeneratorWithRegistryAutodiscovery() {
+        GenerationDataBuilder b = new GenerationDataBuilder();
+        PersistenceService p = new PersistenceService();
+
+        Collection<ClassDocInfo> controllers = p.loadClassInfos("classpath:example_controllers.json");
+        Collection<ClassDocInfo> services = p.loadClassInfos("classpath:example_services.json");
+
+        GenerationOptions o = new GenerationOptions();
+        o.setRestRegistryOutputJsonFileName("temp/ExampleRestRegistry.json");
+        o.setRestRegistryAutoDiscoveryInResources(true);
+        SvrGenerationManager gm = new SvrGenerationManager(o);
+        gm.generate(controllers, services);
+    }
+
+    @Test(groups = {INTEGRATION})
     public void testBaseRestMethodRegistry() {
         GenerationDataBuilder b = new GenerationDataBuilder();
         PersistenceService p = new PersistenceService();

@@ -1,13 +1,17 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
+import com.perceptnet.api.ItemsLoadService;
+import com.perceptnet.api.Services;
 import com.perceptnet.commons.utils.ClassUtils;
-import com.perceptnet.commons.utils.StringUtils;
+import com.perceptnet.restclient.BaseRestMethodRegistry;
 import com.perceptnet.restclient.BaseRestServiceProvider;
 import com.perceptnet.restclient.MessageConverter;
+import com.perceptnet.restclient.dto.ModuleRestRegistryDto;
 import com.perceptnet.tools.ImportsHelper;
 import com.perceptnet.tools.codegen.BaseGenerator;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -33,7 +37,14 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
 
         println();
 
-        generateImports(BaseRestServiceProvider.class, MessageConverter.class);
+
+        generateImports(BaseRestServiceProvider.class, MessageConverter.class, ModuleRestRegistryDto.class);
+
+        String restRegistryResourceName = null;
+        if (ctx.getOptions().isRestRegistryAutoDiscoveryInResources()) {
+            generateImports(ItemsLoadService.class, Services.class);
+            restRegistryResourceName = new File(ctx.getOptions().getRestRegistryOutputJsonFileName()).getName();
+        }
 
 
         ImportsHelper imports = new ImportsHelper();
@@ -65,21 +76,32 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
         //Simple constructor
         print("public ");
         print(ctx.getServiceProviderSimpleName());
-        println("(String baseUrl) {");
-        pushIndentation("    ");
-        println("this(baseUrl, null);");
-        popIndentation();
-        println("}");
-        println();
+        if (ctx.getOptions().isRestRegistryAutoDiscoveryInResources()) {
+            println("(String baseUrl) {");
+            pushIndentation("    ");
+            println("this(baseUrl,");
+            println(" (ModuleRestRegistryDto) Services.getService(ItemsLoadService.class, \"json\").loadItem(\"classpath:" +
+                    restRegistryResourceName + "\"), null);");
+            popIndentation();
+            println("}");
+            println();
+        } else {
+            println("(String baseUrl, ModuleRestRegistryDto registryDto) {");
+            pushIndentation("    ");
+            println("this(baseUrl, registryDto, null);");
+            popIndentation();
+            println("}");
+            println();
+        }
 
-        //Constructor with message converter
+        //Most full constructor with baseUrl, rest registry and message converter
         print("public ");
         print(ctx.getServiceProviderSimpleName());
-        println("(String baseUrl, MessageConverter messageConverter) {");
+        println("(String baseUrl, ModuleRestRegistryDto registryDto, MessageConverter messageConverter) {");
         pushIndentation("    ");
         print("super(baseUrl, new ");
-        print(ctx.getRegistrySimpleName());
-        print("(), ");
+        print(BaseRestMethodRegistry.class.getSimpleName());
+        print("(registryDto), ");
         print("messageConverter, ");
         println("new Class[] {");
         pushIndentation("    ");
