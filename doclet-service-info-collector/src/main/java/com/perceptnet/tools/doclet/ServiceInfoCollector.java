@@ -56,6 +56,7 @@ public class ServiceInfoCollector {
             ci.setName(classDoc.name());
             ci.getMethods().addAll(collectMethodInfo(ci, classDoc));
             ci.setInterface(classDoc.isInterface());
+            ci.getAnnotations().addAll(collectAnnotationsInfo(ci, classDoc.annotations()));
             result.put(ci.getQualifiedName(), ci);
         }
 

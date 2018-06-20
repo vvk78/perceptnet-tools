@@ -1,6 +1,8 @@
-package hello.app;
+package hello.app.message;
 
-public interface MyService {
+import hello.app.MessageDto;
+
+public interface MessageService {
 
     MessageDto getMessage();
 

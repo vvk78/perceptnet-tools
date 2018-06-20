@@ -113,6 +113,9 @@ public class RestGenerationHelper {
      * Parses request mapping and returns list of either String, or String[1] as items. String[1] indicates path variable.
      */
     public List parseRequestMappingStr(String requestMappingPath) {
+        if (requestMappingPath == null || requestMappingPath.isEmpty()) {
+            return new ArrayList<>(0);
+        }
         List result = new ArrayList();
         int curIdx = 0;
         while (curIdx < requestMappingPath.length()) {

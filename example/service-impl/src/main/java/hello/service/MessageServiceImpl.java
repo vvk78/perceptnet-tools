@@ -1,12 +1,11 @@
 package hello.service;
 
 import hello.app.MessageDto;
-import hello.app.MyService;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import hello.app.message.MessageService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MyServiceImpl implements MyService {
+public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageDto getMessage() {
