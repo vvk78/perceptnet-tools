@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -149,6 +150,8 @@ public class RestGenerationHelper {
             return new RestMethodAndMapping(HttpMethod.get, a.getValue());
         } else if (a.getType().getQualifiedName().equals(PostMapping.class.getName())) {
             return new RestMethodAndMapping(HttpMethod.post, a.getValue());
+        } else if (a.getType().getQualifiedName().equals(PutMapping.class.getName())) {
+            return new RestMethodAndMapping(HttpMethod.put, a.getValue());
         } else if (a.getType().getQualifiedName().equals(PatchMapping.class.getName())) {
             return new RestMethodAndMapping(HttpMethod.patch, a.getValue());
         } else if (a.getType().getQualifiedName().equals(DeleteMapping.class.getName())) {
@@ -209,6 +212,11 @@ public class RestGenerationHelper {
                 pathItems.add(null);
             }
         }
+
+        if (pathItems.isEmpty() && !basePath.isEmpty()) {
+            pathItems.add(basePath);
+        }
+
         boolean firstParam = true;
         for (int i = 0; i < m.getParams().size(); i++) {
             RestMethodParamInfo rmp = m.getParams().get(i);

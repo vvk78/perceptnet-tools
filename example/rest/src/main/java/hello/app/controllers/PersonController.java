@@ -38,12 +38,12 @@ public class PersonController {
     }
 
     @PutMapping
-    public void updatePerson(PersonDto person) {
+    public void updatePerson(@RequestBody PersonDto person) {
         personService.updatePerson(person);
     }
 
-    @DeleteMapping
-    void deletePerson(Long personId) {
+    @DeleteMapping("/{personId}")
+    public void deletePerson(@PathVariable("personId") Long personId) {
         personService.deletePerson(personId);
     }
 
