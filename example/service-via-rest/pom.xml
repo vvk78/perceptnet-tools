@@ -45,6 +45,11 @@
         </dependency>
         <dependency>
             <groupId>com.perceptnet.commons</groupId>
+            <artifactId>restclient-base</artifactId>
+            <version>1.3.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.perceptnet.commons</groupId>
             <artifactId>commons-api</artifactId>
             <version>1.3.0-SNAPSHOT</version>
         </dependency>
@@ -87,7 +92,7 @@
                             <arguments>
                                 <argument>-classpath</argument>
                                 <classpath/>
-                                <argument>-Drestapigen.BaseOutputDir=${project.build.directory}/generated-sources/java</argument>
+                                <argument>-Dcodegen.BaseOutputDir=${project.build.directory}/generated-sources/java</argument>
                                 <argument>com.perceptnet.tools.codegen.viarest.spring.SvrGenerationManager</argument>
                                 <argument>-s</argument>
                                 <argument>classpath:example_services.json</argument>

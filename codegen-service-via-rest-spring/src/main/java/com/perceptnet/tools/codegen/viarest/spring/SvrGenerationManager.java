@@ -4,10 +4,10 @@ import com.perceptnet.abstractions.Adaptor;
 import com.perceptnet.commons.json.JsonService;
 import com.perceptnet.commons.utils.IncExlRegexFilter;
 import com.perceptnet.commons.utils.OptionUtils;
-import com.perceptnet.restclient.BaseRestMethodRegistry;
 import com.perceptnet.restclient.dto.ModuleRestRegistryDto;
 import com.perceptnet.restclient.dto.RestMethodDescription;
 import com.perceptnet.restclient.dto.ServiceRestRegistryDto;
+import com.perceptnet.tools.codegen.JavaSrcGenerationHelper;
 import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
 import com.perceptnet.tools.codegen.rest.RestMethodInfo;
 import com.perceptnet.tools.codegen.rest.RestServiceInfo;
@@ -26,7 +26,8 @@ import static com.perceptnet.commons.utils.StringUtils.unquote;
  */
 public class SvrGenerationManager {
     private GenerationOptions options;
-    private RestGenerationHelper helper;
+    private RestGenerationHelper restGenerationHelper;
+    private JavaSrcGenerationHelper javaSrcGenerationHelper;
 
     public static void main(String[] args) {
         Collection<ClassDocInfo> controllerInfos = null;
@@ -40,28 +41,33 @@ public class SvrGenerationManager {
         for (Map.Entry<String, List<String>> entry : options.entrySet()) {
             String optionName = entry.getKey();
             List<String> optionArgs = entry.getValue();
-            if ("-c".equals(optionName)) {
+            if ("-c".equalsIgnoreCase(optionName)) {
                 if (optionArgs.isEmpty()) {
                     throw new IllegalArgumentException("Required value of -c option is not specified");
                 }
                 controllerInfos = p.loadClassInfos(optionArgs.get(0));
-            } else if ("-s".equals(optionName)) {
+            } else if ("-s".equalsIgnoreCase(optionName)) {
                 if (optionArgs.isEmpty()) {
                     throw new IllegalArgumentException("Required value of -s option is not specified");
                 }
                 serviceInfos = p.loadClassInfos(optionArgs.get(0));
-            } else if ("-adapter".equals(optionName)) {
+            } else if ("-adapter".equalsIgnoreCase(optionName)) {
                 if (optionArgs.isEmpty()) {
                     throw new IllegalArgumentException("Required value of -adapter option is not specified");
                 }
                 go.installAdaptor(optionArgs.get(0));
-            } else if ("-f".equals(optionName)) {
+            } else if ("-f".equalsIgnoreCase(optionName)) {
                 if (optionArgs.isEmpty()) {
                     throw new IllegalArgumentException("Required value of -f option is not specified");
                 }
                 go.setRestRegistryOutputJsonFileName(optionArgs.get(0));
-            } else if ("-autoDiscovery".equals(optionName)) {
+            } else if ("-autoDiscovery".equalsIgnoreCase(optionName)) {
                 go.setRestRegistryAutoDiscoveryInResources(true);
+            } else if ("-srcOutDir".equalsIgnoreCase(optionName)) {
+                if (optionArgs.isEmpty()) {
+                    throw new IllegalArgumentException("Required value of -srcOutDir option is not specified");
+                }
+                go.setSrcOutDir(optionArgs.get(0));
             }
         }
 
@@ -74,7 +80,8 @@ public class SvrGenerationManager {
 
     public SvrGenerationManager(GenerationOptions options) {
         this.options = options == null ? new GenerationOptions() : options;
-        this.helper = new RestGenerationHelper();
+        this.restGenerationHelper = new RestGenerationHelper();
+        this.javaSrcGenerationHelper = new JavaSrcGenerationHelper();
     }
 
     Collection<ClassDocInfo> filterControllersInfo(List<String> incNameMasks,
@@ -118,7 +125,7 @@ public class SvrGenerationManager {
         }
 
         RestProviderGenerator rpg = new RestProviderGenerator(ctx);
-        rpg.setOut(System.out);
+        javaSrcGenerationHelper.generateJavaSrcFile(ctx, ctx.getServiceProviderQualifiedName(), rpg, null);
         rpg.generate();
 
     }
@@ -130,8 +137,8 @@ public class SvrGenerationManager {
             registryDto.getServices().put(rsi.getServiceDoc().getQualifiedName(), serviceDto);
             for (RestMethodInfo m : rsi.getRestMethods()) {
                 if (m.getServiceMethodDoc() != null) {
-                    String methodKey = helper.buildServiceMethodQualifiedSignature(m.getServiceMethodDoc());
-                    RestMethodDescription rmd = helper.createRestDescription(rsi, m);
+                    String methodKey = restGenerationHelper.buildServiceMethodQualifiedSignature(m.getServiceMethodDoc());
+                    RestMethodDescription rmd = restGenerationHelper.createRestDescription(rsi, m);
                     serviceDto.getMethods().put(methodKey, rmd);
                 }
             }

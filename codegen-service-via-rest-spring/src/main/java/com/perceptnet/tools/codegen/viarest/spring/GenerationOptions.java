@@ -36,6 +36,8 @@ class GenerationOptions {
     private boolean generate;
     private SvrGenerationAdaptor adaptor;
 
+    private String srcOutDir;
+
 
     public boolean isGenerate() {
         return generate;
@@ -81,6 +83,14 @@ class GenerationOptions {
 
     public void setRestRegistryAutoDiscoveryInResources(boolean restRegistryAutoDiscoveryInResources) {
         this.restRegistryAutoDiscoveryInResources = restRegistryAutoDiscoveryInResources;
+    }
+
+    public String getSrcOutDir() {
+        return srcOutDir;
+    }
+
+    public void setSrcOutDir(String srcOutDir) {
+        this.srcOutDir = srcOutDir;
     }
 
     void validate() {

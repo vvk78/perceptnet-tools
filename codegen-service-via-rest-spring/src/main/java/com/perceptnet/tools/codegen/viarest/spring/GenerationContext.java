@@ -1,13 +1,14 @@
 package com.perceptnet.tools.codegen.viarest.spring;
 
 import com.perceptnet.commons.utils.ClassUtils;
+import com.perceptnet.tools.codegen.BaseGenerationContext;
 import com.perceptnet.tools.codegen.rest.RestGenerationHelper;
 import com.perceptnet.tools.doclet.DocInfoUtils;
 
 /**
  * created by vkorovkin (vkorovkin@gmail.com) on 06.12.2017
  */
-public class GenerationContext {
+public class GenerationContext implements BaseGenerationContext {
 
     private RestGenerationHelper helper = new RestGenerationHelper();
 
@@ -72,7 +73,7 @@ public class GenerationContext {
 
     public String getBaseOutputDir() {
         if (baseOutputDir == null) {
-            String str = System.getProperty("restapigen.BaseOutputDir");
+            String str = System.getProperty("codegen.BaseOutputDir", options.getSrcOutDir());
             if (str != null) {
                 baseOutputDir = str;
             }

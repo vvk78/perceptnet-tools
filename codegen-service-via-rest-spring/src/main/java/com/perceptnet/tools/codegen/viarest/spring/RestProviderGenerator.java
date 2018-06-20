@@ -37,8 +37,7 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
 
         println();
 
-
-        generateImports(BaseRestServiceProvider.class, MessageConverter.class, ModuleRestRegistryDto.class);
+        generateImports(BaseRestServiceProvider.class, BaseRestMethodRegistry.class, MessageConverter.class, ModuleRestRegistryDto.class);
 
         String restRegistryResourceName = null;
         if (ctx.getOptions().isRestRegistryAutoDiscoveryInResources()) {
@@ -80,7 +79,7 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
             println("(String baseUrl) {");
             pushIndentation("    ");
             println("this(baseUrl,");
-            println(" (ModuleRestRegistryDto) Services.getService(ItemsLoadService.class, \"json\").loadItem(\"classpath:" +
+            println(" (ModuleRestRegistryDto) Services.get(ItemsLoadService.class, \"json\").loadItem(\"classpath:" +
                     restRegistryResourceName + "\"), null);");
             popIndentation();
             println("}");

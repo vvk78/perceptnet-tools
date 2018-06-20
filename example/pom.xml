@@ -21,6 +21,7 @@
         <module>service-impl</module>
         <module>rest</module>
         <module>service-via-rest</module>
+        <module>test-client</module>
     </modules>
 
 

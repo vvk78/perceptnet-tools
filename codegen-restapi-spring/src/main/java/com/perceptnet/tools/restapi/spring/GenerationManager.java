@@ -128,6 +128,16 @@ public class GenerationManager {
         this.ctx = ctx;
     }
 
+    GenerationContext createContext(Collection<ClassInfo> controllers) {
+        GenerationContext ctx = new GenerationContext(adaptor);
+        for (ClassInfo c : controllers) {
+            String serviceQualifiedName = this.adaptor.getServiceQualifiedNameFromController(c.getQualifiedName());
+            RestServiceInfo serviceInfo = new RestServiceInfo(serviceQualifiedName);
+            ctx.getRestServices().put(c, serviceInfo);
+        }
+        return ctx;
+    }
+
     private <P> void generateSourceFile(String fileNameToBeGenerated, BaseGenerator<P> generator, P generationParams) {
         FileUtils.prepareFileForReCreation(fileNameToBeGenerated);
         try (PrintStream ps = new PrintStream(new FileOutputStream(fileNameToBeGenerated), true, ctx.getEncoding())) {
@@ -139,15 +149,7 @@ public class GenerationManager {
         }
     }
 
-    GenerationContext createContext(Collection<ClassInfo> controllers) {
-        GenerationContext ctx = new GenerationContext(adaptor);
-        for (ClassInfo c : controllers) {
-            String serviceQualifiedName = this.adaptor.getServiceQualifiedNameFromController(c.getQualifiedName());
-            RestServiceInfo serviceInfo = new RestServiceInfo(serviceQualifiedName);
-            ctx.getRestServices().put(c, serviceInfo);
-        }
-        return ctx;
-    }
+
 
     private String getSourceFileNameForClass(String qualifiedClassName) {
         String result = qualifiedClassName.replace(".", "/") + ".java";
