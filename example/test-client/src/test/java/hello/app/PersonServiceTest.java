@@ -2,7 +2,6 @@ package hello.app;
 
 
 import hello.app.person.PersonDto;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -15,11 +14,6 @@ import static org.testng.Assert.*;
  * created by vkorovkin on 20.06.2018
  */
 public class PersonServiceTest extends BaseServiceViaRestClientTest  {
-
-    @Test
-    public void testUpdatePerson() {
-        getPersonService().updatePerson(new PersonDto());
-    }
 
     @Test
     public void testPersonCrud() {

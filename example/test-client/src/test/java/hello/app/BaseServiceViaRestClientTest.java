@@ -1,5 +1,6 @@
 package hello.app;
 
+
 import org.testng.annotations.BeforeClass;
 
 
@@ -8,8 +9,18 @@ import org.testng.annotations.BeforeClass;
  */
 public class BaseServiceViaRestClientTest {
 
+    private static final Object _appLock = new Object();
+    private static boolean appLaunched;
+
     @BeforeClass
     public void beforeClass() {
-        RestServiceProvider.INSTANCE = new RestServiceProvider("http://localhost:8080");
+        synchronized (_appLock) {
+            if (!appLaunched) {
+                DemoApplication.main(new String[0]);
+                RestServiceProvider.INSTANCE = new RestServiceProvider("http://localhost:8080");
+                appLaunched = true;
+            }
+        }
     }
+
 }
