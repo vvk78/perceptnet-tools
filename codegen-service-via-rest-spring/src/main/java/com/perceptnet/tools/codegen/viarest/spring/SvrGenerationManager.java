@@ -124,9 +124,11 @@ public class SvrGenerationManager {
             js.saveItem(System.out, registryDto);
         }
 
-        RestProviderGenerator rpg = new RestProviderGenerator(ctx);
-        javaSrcGenerationHelper.generateJavaSrcFile(ctx, ctx.getServiceProviderQualifiedName(), rpg, null);
-        rpg.generate();
+        if (!registryDto.getServices().isEmpty()) {
+            RestProviderGenerator rpg = new RestProviderGenerator(ctx);
+            javaSrcGenerationHelper.generateJavaSrcFile(ctx, ctx.getServiceProviderQualifiedName(), rpg, null);
+            rpg.generate();
+        }
 
     }
 
