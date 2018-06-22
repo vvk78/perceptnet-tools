@@ -114,7 +114,10 @@ public class SvrGenerationTest {
         Collection<ClassDocInfo> controllers = p.loadClassInfos("classpath:example_controllers.json");
         Collection<ClassDocInfo> services = p.loadClassInfos("classpath:example_services.json");
 
-        SvrGenerationManager gm = new SvrGenerationManager(null);
+        GenerationOptions go = new GenerationOptions();
+        go.setBasicSignInRequestPath("auth/sign-in/basic");
+        go.setSignOutRequestPath("auth/sign-out");
+        SvrGenerationManager gm = new SvrGenerationManager(go);
         gm.generate(controllers, services);
     }
 

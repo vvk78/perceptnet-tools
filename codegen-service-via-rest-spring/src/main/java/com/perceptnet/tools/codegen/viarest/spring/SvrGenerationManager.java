@@ -68,6 +68,16 @@ public class SvrGenerationManager {
                     throw new IllegalArgumentException("Required value of -srcOutDir option is not specified");
                 }
                 go.setSrcOutDir(optionArgs.get(0));
+            } else if ("-signInBasic".equalsIgnoreCase(optionName)) {
+                if (optionArgs.isEmpty()) {
+                    throw new IllegalArgumentException("Required value of -srcOutDir option is not specified");
+                }
+                go.setBasicSignInRequestPath(optionArgs.get(0));
+            } else if ("-signOut".equalsIgnoreCase(optionName)) {
+                if (optionArgs.isEmpty()) {
+                    throw new IllegalArgumentException("Required value of -srcOutDir option is not specified");
+                }
+                go.setSignOutRequestPath(optionArgs.get(0));
             }
         }
 

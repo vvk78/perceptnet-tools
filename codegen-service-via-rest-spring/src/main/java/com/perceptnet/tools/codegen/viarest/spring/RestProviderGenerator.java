@@ -3,6 +3,7 @@ package com.perceptnet.tools.codegen.viarest.spring;
 import com.perceptnet.api.ItemsLoadService;
 import com.perceptnet.api.Services;
 import com.perceptnet.commons.utils.ClassUtils;
+import com.perceptnet.commons.utils.StringUtils;
 import com.perceptnet.restclient.BaseRestMethodRegistry;
 import com.perceptnet.restclient.BaseRestServiceProvider;
 import com.perceptnet.restclient.MessageConverter;
@@ -19,6 +20,7 @@ import java.util.Iterator;
  * created by vkorovkin (vkorovkin@gmail.com) on 12.12.2017
  */
 public class RestProviderGenerator extends BaseGenerator<Object> {
+    public static final String INDENT = "    ";
     private GenerationContext ctx;
 
     public RestProviderGenerator(GenerationContext ctx) {
@@ -56,22 +58,86 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
             imports.addImport(sd.getQualifiedName());
         }
 
-        println();
-        print("public class ");
-        print(ctx.getServiceProviderSimpleName());
-        print(" extends ");
-        print(BaseRestServiceProvider.class.getName());
-        println(" {");
-        pushIndentation("    ");
+        printClassDeclaration();
+        printInstanceField();
+        printConstructors(restRegistryResourceName, imports, services);
+        printServiceGetters(imports, services);
+
+        printSignInIfNeeded();
+        printSignOutIfNeeded();
+
+
+        printClassClosingBrace();
+    }
+
+    private void printSignInIfNeeded() {
+        String path = ctx.getOptions().getBasicSignInRequestPath();
+        if (!StringUtils.isBlank(path)) {
+            println();
+            println("public void signInBasic(String login, String password) {");
+            println(INDENT + "signInBasic(\"" + path +"\", login, password);");
+            println("}");
+        }
+    }
+
+    private void printSignOutIfNeeded() {
+        String path = ctx.getOptions().getSignOutRequestPath();
+        if (!StringUtils.isBlank(path)) {
+            println();
+            println("public void signOut() {");
+            println(INDENT + "signOut(\"" + path +"\");");
+            println("}");
+        }
+    }
+
+    private void printClassClosingBrace() {
         println();
 
+        popIndentation();
+        println("}");
+    }
+
+    private void printInstanceField() {
         //
         println("//not declared volatile as the variable is set once at startup and thus the chance of collision is minimal");
         print("public static ");
         print(ctx.getServiceProviderSimpleName());
         print(" ");
         println("INSTANCE;");
+        println();
+    }
 
+    private void printClassDeclaration() {
+        println();
+        print("public class ");
+        print(ctx.getServiceProviderSimpleName());
+        print(" extends ");
+        print(BaseRestServiceProvider.class.getName());
+        println(" {");
+        pushIndentation(INDENT);
+        println();
+    }
+
+    private void printServiceGetters(ImportsHelper imports, Collection<ClassDocInfo<?>> services) {
+        for (ClassDocInfo<?> s : services) {
+            println();
+            print("public static ");
+            String actualName = imports.actualName(s.getQualifiedName());
+            print(actualName);
+            print(" get");
+            String simpleName = ClassUtils.simpleName(s.getQualifiedName());
+            print(simpleName);
+            println("() {");
+            pushIndentation("    ");
+            print("return INSTANCE.getRestService(");
+            print(actualName);
+            println(".class);");
+            popIndentation();
+            println("}");
+        }
+    }
+
+    private void printConstructors(String restRegistryResourceName, ImportsHelper imports, Collection<ClassDocInfo<?>> services) {
         //Simple constructor
         print("public ");
         print(ctx.getServiceProviderSimpleName());
@@ -116,28 +182,6 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
         }
         popIndentation();
         println("});");
-        popIndentation();
-        println("}");
-
-        for (ClassDocInfo<?> s : services) {
-            println();
-            print("public static ");
-            String actualName = imports.actualName(s.getQualifiedName());
-            print(actualName);
-            print(" get");
-            String simpleName = ClassUtils.simpleName(s.getQualifiedName());
-            print(simpleName);
-            println("() {");
-            pushIndentation("    ");
-            print("return INSTANCE.getRestService(");
-            print(actualName);
-            println(".class);");
-            popIndentation();
-            println("}");
-        }
-
-        println();
-
         popIndentation();
         println("}");
     }

@@ -38,6 +38,9 @@ class GenerationOptions {
 
     private String srcOutDir;
 
+    private String basicSignInRequestPath;
+    private String signOutRequestPath;
+
 
     public boolean isGenerate() {
         return generate;
@@ -91,6 +94,22 @@ class GenerationOptions {
 
     public void setSrcOutDir(String srcOutDir) {
         this.srcOutDir = srcOutDir;
+    }
+
+    public String getSignOutRequestPath() {
+        return signOutRequestPath;
+    }
+
+    public void setSignOutRequestPath(String signOutRequestPath) {
+        this.signOutRequestPath = signOutRequestPath;
+    }
+
+    public String getBasicSignInRequestPath() {
+        return basicSignInRequestPath;
+    }
+
+    public void setBasicSignInRequestPath(String basicSignInRequestPath) {
+        this.basicSignInRequestPath = basicSignInRequestPath;
     }
 
     void validate() {
