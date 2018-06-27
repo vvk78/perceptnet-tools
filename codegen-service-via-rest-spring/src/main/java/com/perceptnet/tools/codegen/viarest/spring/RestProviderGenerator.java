@@ -40,6 +40,11 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
         println();
 
         generateImports(BaseRestServiceProvider.class, BaseRestMethodRegistry.class, MessageConverter.class, ModuleRestRegistryDto.class);
+        if (!StringUtils.isBlank(ctx.getOptions().getRestInvocationErrorHandlerClass())) {
+            print("import ");
+            print(ctx.getOptions().getRestInvocationErrorHandlerClass());
+            println(";");
+        }
 
         String restRegistryResourceName = null;
         if (ctx.getOptions().isRestRegistryAutoDiscoveryInResources()) {
@@ -147,6 +152,7 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
             println("this(baseUrl,");
             println(" (ModuleRestRegistryDto) Services.get(ItemsLoadService.class, \"json\").loadItem(\"classpath:" +
                     restRegistryResourceName + "\"), null);");
+            printErrorHandlerInstallationIfNeeded();
             popIndentation();
             println("}");
             println();
@@ -182,8 +188,17 @@ public class RestProviderGenerator extends BaseGenerator<Object> {
         }
         popIndentation();
         println("});");
+        printErrorHandlerInstallationIfNeeded();
         popIndentation();
         println("}");
+    }
+
+    private void printErrorHandlerInstallationIfNeeded() {
+        if (ctx.getOptions().getRestInvocationErrorHandlerClass() != null) {
+            print("this.getHandler().setRestInvocationErrorHandler(new ");
+            print(ctx.getOptions().getRestInvocationErrorHandlerClass());
+            println("());");
+        }
     }
 
     private void generateImports(Class ... classes) {

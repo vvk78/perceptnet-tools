@@ -41,6 +41,10 @@ class GenerationOptions {
     private String basicSignInRequestPath;
     private String signOutRequestPath;
 
+    private String restInvocationErrorHandlerClass;
+
+
+
 
     public boolean isGenerate() {
         return generate;
@@ -110,6 +114,14 @@ class GenerationOptions {
 
     public void setBasicSignInRequestPath(String basicSignInRequestPath) {
         this.basicSignInRequestPath = basicSignInRequestPath;
+    }
+
+    public String getRestInvocationErrorHandlerClass() {
+        return restInvocationErrorHandlerClass;
+    }
+
+    public void setRestInvocationErrorHandlerClass(String restInvocationErrorHandlerClass) {
+        this.restInvocationErrorHandlerClass = restInvocationErrorHandlerClass;
     }
 
     void validate() {

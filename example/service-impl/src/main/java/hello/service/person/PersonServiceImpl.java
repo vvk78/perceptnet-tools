@@ -1,5 +1,6 @@
 package hello.service.person;
 
+import hello.app.BusinessLogicException;
 import hello.app.person.PersonDto;
 import hello.app.person.PersonService;
 import org.springframework.stereotype.Service;
@@ -55,5 +56,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void deletePerson(Long personId) {
         personRepository.remove(personId);
+    }
+
+    @Override
+    public PersonDto loadNonExistingPerson(Long personId) {
+        throw new BusinessLogicException("Person with id " + personId + " does not exist");
     }
 }

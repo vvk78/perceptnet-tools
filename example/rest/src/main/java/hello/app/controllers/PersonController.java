@@ -32,6 +32,11 @@ public class PersonController {
         return personService.loadPerson(personId);
     }
 
+    @GetMapping("/nonexisting/{personId}")
+    public PersonDto loadNonExistingPerson(@PathVariable("personId") Long personId) {
+        return personService.loadNonExistingPerson(personId);
+    }
+
     @PostMapping
     public Long createPerson(@RequestBody PersonDto person) {
         return personService.createPerson(person);

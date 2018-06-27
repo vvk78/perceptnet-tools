@@ -56,4 +56,9 @@ public class PersonServiceTest extends BaseServiceViaRestClientTest  {
         }
     }
 
+    @Test(expectedExceptions = {BusinessLogicException.class})
+    public void testExceptionHandling() {
+        getPersonService().loadNonExistingPerson(666L);
+    }
+
 }

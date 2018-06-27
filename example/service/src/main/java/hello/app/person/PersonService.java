@@ -1,5 +1,7 @@
 package hello.app.person;
 
+import hello.app.BusinessLogicException;
+
 import java.util.List;
 
 /**
@@ -16,4 +18,6 @@ public interface PersonService {
     void updatePerson(PersonDto person);
 
     void deletePerson(Long personId);
+
+    PersonDto loadNonExistingPerson(Long personId);
 }
