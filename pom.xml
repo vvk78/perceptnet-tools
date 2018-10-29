@@ -59,6 +59,12 @@
                 <artifactId>restclient-base-dto</artifactId>
                 <version>${perceptnet.commons.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.perceptnet.commons</groupId>
+                <artifactId>tests</artifactId>
+                <version>${perceptnet.commons.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

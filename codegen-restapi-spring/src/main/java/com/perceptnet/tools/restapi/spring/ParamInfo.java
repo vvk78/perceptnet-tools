@@ -8,6 +8,7 @@ package com.perceptnet.tools.restapi.spring;
 class ParamInfo implements DocInfo {
     private String name;
     private String type;
+    private String qualifiedTypeName;
     private String actualTypeName;
     private String urlPathVariable;
     private String urlParamName;
@@ -16,8 +17,9 @@ class ParamInfo implements DocInfo {
     public ParamInfo() {
     }
 
-    public ParamInfo(String name, String type, String actualTypeName) {
+    public ParamInfo(String name, String type, String qualifiedTypeName, String actualTypeName) {
         this.actualTypeName = actualTypeName;
+        this.qualifiedTypeName = qualifiedTypeName;
         this.type = type;
         this.name = name;
     }
@@ -44,6 +46,14 @@ class ParamInfo implements DocInfo {
 
     public void setActualTypeName(String actualTypeName) {
         this.actualTypeName = actualTypeName;
+    }
+
+    public String getQualifiedTypeName() {
+        return qualifiedTypeName;
+    }
+
+    public void setQualifiedTypeName(String qualifiedTypeName) {
+        this.qualifiedTypeName = qualifiedTypeName;
     }
 
     public String getUrlPathVariable() {

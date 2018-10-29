@@ -136,7 +136,7 @@ public class RestServiceGenDoclet {
 
         params:
             for (Parameter p : m.parameters()) {
-                ParamInfo pi = new ParamInfo(p.name(), p.typeName(), ci.addImport(p.type().qualifiedTypeName()));
+                ParamInfo pi = new ParamInfo(p.name(), p.typeName(), p.type().qualifiedTypeName(), ci.addImport(p.type().qualifiedTypeName()));
                 mi.getParams().add(pi);
                 for (AnnotationDesc ad : p.annotations()) {
                     String requestParam = extractAnnotationValue(RequestParam.class, ad);

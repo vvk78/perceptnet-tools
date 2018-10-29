@@ -30,18 +30,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.paragonsoftware.commons</groupId>
-                <artifactId>abstractions</artifactId>
-                <version>${paragon.commons.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.paragonsoftware.commons</groupId>
-                <artifactId>testutils</artifactId>
-                <scope>test</scope>
-                <version>${paragon.commons.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -275,6 +263,17 @@
                 <version>${spring-boot.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.perceptnet.commons</groupId>
+                <artifactId>restclient-onapacheclient</artifactId>
+                <version>${perceptnet.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.perceptnet.commons</groupId>
+                <artifactId>restclient-conv-onjackson</artifactId>
+                <version>${perceptnet.commons.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -287,7 +286,6 @@
         <!--<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>-->
         <perceptnet.commons.version>1.3.0-SNAPSHOT</perceptnet.commons.version>
         <!--<perceptnet.tools.version>1.0-SNAPSHOT</perceptnet.tools.version>-->
-        <paragon.commons.version>1.3.0-SNAPSHOT</paragon.commons.version>
         <spring-boot.version>2.0.0.RELEASE</spring-boot.version>
     </properties>
 

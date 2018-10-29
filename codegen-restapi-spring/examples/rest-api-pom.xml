@@ -30,18 +30,17 @@
         <dependency>
             <groupId>com.perceptnet.commons</groupId>
             <artifactId>restclient-base</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Strictly speaking, these dependencies are not needed for compilation, just for code generation. But buggy exec
-             plugin does not let me configure execution classpath properly, so this is a hack until bug in exec plugin is fixed.
-             Note that <scope>provided</scope> should free us from getting unneeded dependency-->
-        <dependency>
-            <groupId>com.perceptnet.tools</groupId>
-            <artifactId>restapi</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--&lt;!&ndash; Strictly speaking, these dependencies are not needed for compilation, just for code generation. But buggy exec-->
+             <!--plugin does not let me configure execution classpath properly, so this is a hack until bug in exec plugin is fixed.-->
+             <!--Note that <scope>provided</scope> should free us from getting unneeded dependency&ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.perceptnet.tools</groupId>-->
+            <!--<artifactId>restapi</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>

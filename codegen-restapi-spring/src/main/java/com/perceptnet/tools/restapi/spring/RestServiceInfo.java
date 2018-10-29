@@ -18,7 +18,7 @@ public class RestServiceInfo {
     private final String serviceSimpleName;
 
     private Map<String, List<MethodInfo>> methodsOnName;
-    private int overloadedMethods;
+//    private int overloadedMethods;
     private int totalMethods;
 
     public RestServiceInfo(String serviceQualifiedName) {
@@ -54,24 +54,29 @@ public class RestServiceInfo {
             methodsOnName.put(m.getName(), l);
         }
         l.add(m);
-        if (l.size() == 2) {
-            //the second occurrence of the name makes the first occurrence add 1 to number of overloaded methods
-            overloadedMethods = overloadedMethods + 2;
-        } else if (l.size() > 2) {
-            overloadedMethods++;
-        }
+//        if (l.size() == 2) {
+//            //the second occurrence of the name makes the first occurrence add 1 to number of overloaded methods
+//            overloadedMethods = overloadedMethods + 2;
+//        } else if (l.size() > 2) {
+//            overloadedMethods++;
+//        }
         totalMethods++;
     }
 
-    public boolean isHasOverloadedMethods() {
-        return overloadedMethods > 0;
-    }
+//    public boolean isHasOverloadedMethods() {
+//        return overloadedMethods > 0;
+//    }
+//
+//    public int getOverloadedMethods() {
+//        return overloadedMethods;
+//    }
+//
+//    public int getSingleMethods() {
+//        return totalMethods - overloadedMethods;
+//    }
 
-    public int getOverloadedMethods() {
-        return overloadedMethods;
-    }
 
-    public int getSingleMethods() {
-        return totalMethods - overloadedMethods;
+    public int getTotalMethods() {
+        return totalMethods;
     }
 }

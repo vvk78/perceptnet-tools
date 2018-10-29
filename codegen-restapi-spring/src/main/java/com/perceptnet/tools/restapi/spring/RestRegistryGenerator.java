@@ -1,10 +1,12 @@
 package com.perceptnet.tools.restapi.spring;
 
+import com.perceptnet.commons.utils.ReflectionUtils;
 import com.perceptnet.restclient.BaseRestMethodRegistry;
 import com.perceptnet.restclient.dto.HttpMethod;
 import com.perceptnet.restclient.dto.RestMethodDescription;
 import com.perceptnet.restclient.ServiceMethodsRegistry;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -71,59 +73,67 @@ public class RestRegistryGenerator extends BaseGenerator<Collection<ClassInfo>> 
         print("ConcurrentHashMap<String, ServiceMethodsRegistry> result = new ConcurrentHashMap<>(");
         print(controllers.size());
         println(");");
+
         //map for overloaded methods
-        println("ConcurrentHashMap<String, RestMethodDescription> om;");
+        //println("ConcurrentHashMap<String, RestMethodDescription> om;");
         //map for not overloaded methods
+
         println("ConcurrentHashMap<String, RestMethodDescription> m;");
 
         for (ClassInfo c : controllers) {
             basePath = c.getBaseRestMapping();
             s = ctx.getRestServices().get(c);
-            if (s == null) {
+            if (s == null || s.getTotalMethods() == 0) {
                 continue;
             }
             println();
             print("// ");
             println(s.getServiceQualifiedName());
-            if (s.getSingleMethods() > 0) {
-                print("m = new ConcurrentHashMap<>(");
-                print(s.getSingleMethods());
-                println(");");
-            } else {
-                println("m = null;");
-            }
-            if (s.getOverloadedMethods() > 0) {
-                print("om = new ConcurrentHashMap<>(");
-                print(s.getOverloadedMethods());
-                println(");");
-            } else {
-                println("om = null;");
-            }
 
-            print("result.put(\"");
-            print(s.getServiceQualifiedName());
-            println("\", new ServiceMethodsRegistry(om, m));");
+//            if (s.getSingleMethods() > 0) {
+//                print("m = new ConcurrentHashMap<>(");
+//                print(s.getSingleMethods());
+//                println(");");
+//            } else {
+//                println("m = null;");
+//            }
+//            if (s.getOverloadedMethods() > 0) {
+//                print("om = new ConcurrentHashMap<>(");
+//                print(s.getOverloadedMethods());
+//                println(");");
+//            } else {
+//                println("om = null;");
+//            }
+
+            print("m = new ConcurrentHashMap<>(");
+            print(s.getTotalMethods());
+            println(");");
+
 
             for (List<MethodInfo> methods : s.getMethodsOnName().values()) {
                 for (MethodInfo method : methods) {
                     RestMethodDescription d = helper.createRestDescription(c, method);
-                    if (methods.size() == 1) {
-                        if (s.getSingleMethods() <= 0) {
-                            throw new IllegalStateException("Encountered single method " + method.getName() + "; but single methods count is 0");
-                        }
-                        print("m.put(\"");
-                        print(method.getName());
-                        println("\", ");
-                    } else {
-                        if (s.getOverloadedMethods() <= 0) {
-                            throw new IllegalStateException("Encountered overloaded method " + method.getName() + "; but single methods count is 0");
-                        }
-                        print("om.put(\"");
-                        print(method.getName());
-                        print("(");
-                        print(method.getFlatSignature());
-                        println(")\", ");
-                    }
+//                    if (methods.size() == 1) {
+//                        if (s.getSingleMethods() <= 0) {
+//                            throw new IllegalStateException("Encountered single method " + method.getName() + "; but single methods count is 0");
+//                        }
+//                        print("m.put(\"");
+//                        print(method.getName());
+//                        println("\", ");
+//                    } else {
+//                        if (s.getOverloadedMethods() <= 0) {
+//                            throw new IllegalStateException("Encountered overloaded method " + method.getName() + "; but single methods count is 0");
+//                        }
+//                        print("om.put(\"");
+//                        print(method.getName());
+//                        print("(");
+//                        print(method.getFlatSignature());
+//                        println(")\", ");
+//                    }
+
+                    print("m.put(\"");
+                    print(getMethodKey(method));
+                    println("\", ");
                     pushIndentation("   ");
                     print("new RestMethodDescription(");
                     pushIndentation("   ");
@@ -147,7 +157,11 @@ public class RestRegistryGenerator extends BaseGenerator<Collection<ClassInfo>> 
                     popIndentation();
                 }
             }
+            print("result.put(\"");
+            print(s.getServiceQualifiedName());
+            println("\", new ServiceMethodsRegistry(m));");
         }
+
 
         println("return result;");
         popIndentation();
@@ -186,7 +200,22 @@ public class RestRegistryGenerator extends BaseGenerator<Collection<ClassInfo>> 
         return buff.toString();
     }
 
-
+    private String getMethodKey(MethodInfo m) {
+        StringBuilder b = new StringBuilder(m.getName().length() + (m.getParams().size() * 50) + 10);
+        b.append(m.getName());
+        b.append("(");
+        boolean first = true;
+        for (ParamInfo pi : m.getParams()) {
+            if (!first) {
+                b.append(",");
+            } else {
+                first = false;
+            }
+            b.append(pi.getQualifiedTypeName());
+        }
+        b.append(")");
+        return b.toString();
+    }
 
 
 
