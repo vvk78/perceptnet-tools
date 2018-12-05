@@ -3,12 +3,12 @@ package com.perceptnet.tools.codegen.viarest.spring;
 import com.perceptnet.api.ItemsLoadService;
 import com.perceptnet.api.Services;
 import com.perceptnet.commons.utils.ClassUtils;
+import com.perceptnet.commons.utils.ImportsHelper;
 import com.perceptnet.commons.utils.StringUtils;
 import com.perceptnet.restclient.BaseRestMethodRegistry;
 import com.perceptnet.restclient.BaseRestServiceProvider;
 import com.perceptnet.restclient.MessageConverter;
 import com.perceptnet.restclient.dto.ModuleRestRegistryDto;
-import com.perceptnet.tools.ImportsHelper;
 import com.perceptnet.tools.codegen.BaseGenerator;
 import com.perceptnet.tools.doclet.data.ClassDocInfo;
 

@@ -1,6 +1,7 @@
 package com.perceptnet.tools.doclet.data;
 
-import com.perceptnet.tools.ImportsHelper;
+
+import com.perceptnet.commons.utils.ImportsHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
